@@ -20,16 +20,16 @@ Este sistema de tienda en línea con integración de PayPal te permite crear un 
 
 ## Capturas de Pantalla
 
-![Screens/1.png](Screns/1.png)
-![Screens/2.png](Screns/2.png)
-![Screens/3.png](Screns/3.png)
-![Screens/4.png](Screns/4.png)
-![Screens/5.png](Screns/5.png)
-![Screens/6.png](Screns/6.png)
-![Screens/7.png](Screns/7.png)
-![Screens/8.png](Screns/8.png)
-![Screens/9.png](Screns/9.png)
-![Screens/10.png](Screns/10.png)
+![https://raw.githubusercontent.com/wecodexoficial/paypal-system-store/refs/heads/main/Screens/1.png](https://raw.githubusercontent.com/wecodexoficial/paypal-system-store/refs/heads/main/Screens/1.png)
+![https://raw.githubusercontent.com/wecodexoficial/paypal-system-store/refs/heads/main/Screens/2.png](https://raw.githubusercontent.com/wecodexoficial/paypal-system-store/refs/heads/main/Screens/2.png)
+![https://raw.githubusercontent.com/wecodexoficial/paypal-system-store/refs/heads/main/Screens/3.png](https://raw.githubusercontent.com/wecodexoficial/paypal-system-store/refs/heads/main/Screens/3.png)
+![Screens/4.png](Screens/4.png)
+![Screens/5.png](Screens/5.png)
+![Screens/6.png](Screens/6.png)
+![Screens/7.png](Screens/7.png)
+![Screens/8.png](Screens/8.png)
+![Screens/9.png](Screens/9.png)
+![Screens/10.png](Screens/10.png)
 
 ## Demostración
 Usuario: admin  
