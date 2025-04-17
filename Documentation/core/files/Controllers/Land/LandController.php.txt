@@ -1,0 +1,16 @@
+<?php
+/**
+ * Controller: LandController
+ * Fecha: 06/07/2017
+ * Hora: 9:41 AM
+ */
+namespace Land;
+
+class LandController extends \MasterController
+{
+
+    public function index(){
+        \Responses::jsonData(\ImapMail::getAttachments());
+    }
+
+}

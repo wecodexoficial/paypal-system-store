@@ -1,0 +1,436 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 06/09/2017
+ * Time: 14:01
+ *
+ * Este controlador se encargara de validar las facturas (XML) que sean cargados
+ *
+ */
+
+namespace Sat;
+class ValidatorController
+{
+
+    public $messages;
+    public $dom;
+    protected $data;
+    private $xsl;
+    private $xslt;
+
+
+    function __construct($data = null)
+    {
+        $this->data = $data;
+        $this->messages = array();
+        $this->xsl = new \DOMDocument();
+        $this->dom = new \DOMDocument();
+        $this->xslt = new \XSLTProcessor();
+        $this->tfd = new \DOMDocument();
+        $this->dom->loadXML($this->data["xml"]);
+
+
+    }
+
+    function valida_xsd()
+    {
+
+        /*
+         * Todos los archivos que se requieren para hacer la validacion
+         * fueron descargados del portal del SAT pero se han guardado localmente
+         * almacenados en el sistema para que las validaciones sean mas rapidas.
+         * Ademas el archivo prinicpal cfdv32.xsd esta 'un poco' modifcado para
+         * que importe los complementos
+         *
+         * */
+
+        libxml_use_internal_errors(true);
+        if ($this->data['tipo'] == "retenciones") {
+            switch ($this->data['version']) {
+                case "1.0":
+                    $this->messages["Version"] = "Version 1.0 Retenciones ";
+                    $ok = $this->dom->schemaValidate("library/xsd/retencionpagov1.xsd");
+                    break;
+                default:
+                    $ok = false;
+                    echo "Version invalida " . $this->data['tipo'] . $this->data['version'] . "";
+            }
+        } else {
+            switch ($this->data['version']) {
+                case "2.0":
+                    $this->messages["Version"] = "Version 2.0 CFD ";
+                    $ok = $this->dom->schemaValidate("library/sat/xsd/cfdv2complemento.xsd");
+                    break;
+                case "2.2":
+                    $this->messages["Version"] = "Version 2.2 CFD ";
+                    $ok = $this->dom->schemaValidate("library/sat/xsd/cfdv22complemento.xsd");
+                    break;
+                case "3.0":
+                    $this->messages["Version"] = "Version 3.0 (CFDI) ";
+                    $ok = $this->dom->schemaValidate("library/sat/xsd/cfdv3complemento.xsd");
+                    break;
+                case "3.2":
+                    $this->messages["Version"] = "Version 3.2 CFDI ";
+                    $ok = $this->dom->schemaValidate("library/sat/xsd/cfdv32.xsd");
+                    break;
+                case "3.3":
+                    $this->messages["Version"] = "Version 3.3 CFDI ";
+                    $ok = $this->dom->schemaValidate("library/sat/xsd/cfdv33.xsd");
+                    break;
+                default:
+                    $ok = false;
+                    $this->messages["Version"] = "Version invalida  " . $this->data['version'] . "";
+            }
+        }
+        if ($ok) {
+            $this->messages["Esquema"] = "Valido ";
+        } else {
+            $this->messages["Esquema"] = "Estructura contra esquema incorrecta ";
+        }
+    }
+
+
+    //valida Sello que no este manipulada la facturas
+    public function validaSello()
+    {
+        /*
+         * Todos los archivos que se requieren para generar la cadena original
+         * fueron descargados del portal del SAT pero los tengo localmente
+         * almacenados en mi maquina para que el proceso sea mas rapido.
+         *
+         * Todos los archivos estan modificacion por el numero de version 2 a 1,
+         * para que no mande warning PHP
+         *
+         * [dev@www sat]$ ls *xslt
+         * Divisas.xslt                     intereses.xslt
+         * TuristaPasajeroExtranjero.xslt   intereseshipotecarios.xslt
+         * aerolineas.xslt                  leyendasFisc.xslt
+         * arrendamientoenfideicomiso.xslt  nomina11.xslt
+         * cadenaoriginal_2_0.xslt          obrasarteantiguedades.xslt
+         * cadenaoriginal_2_2.xslt          operacionesconderivados.xslt
+         * cadenaoriginal_3_0.xslt          pagosaextranjeros.xslt
+         * cadenaoriginal_3_2.xslt          pfic.xslt
+         * cadenaoriginal_TFD_1_0.xslt      planesderetiro.xslt
+         * certificadodedestruccion.xslt    premios.xslt
+         * cfdiregistrofiscal.xslt          renovacionysustitucionvehiculos.xslt
+         * detallista.xslt                  retenciones.xslt
+         * dividendos.xslt                  sectorfinanciero.xslt
+         * donat11.xslt                     sello.xslt
+         * ecc.xslt                         servicioparcialconstruccion.xslt
+         * enajenaciondeacciones.xslt       spei.xslt
+         * fideicomisonoempresarial.xslt    terceros11.xslt
+         * iedu.xslt                        utilerias.xslt
+         * implocal.xslt                    vehiculousado.xslt
+         * impresion.xslt                   ventavehiculos.xslt
+         *
+         **/
+
+
+        if ($this->data['tipo'] == "retenciones") {
+            switch ($this->data['version']) {
+                case "1.0":
+                    $this->xsl->load("library/sat/xslt/retenciones.xslt");
+                    $algo = OPENSSL_ALGO_SHA1;
+                    break;
+                default:
+                    $this->messages["Encriptacion"] = "version incorrecta " . $this->data['tipo'] . " " . $this->data['version'] . "";
+                    break;
+            }
+        } else {
+            switch ($this->data['version']) {
+                case "2.0":
+                    $this->xsl->load("library/sat/xslt/retenciones.xslt");
+                    if (substr($this->data['fecha'], 0, 4) < 2011) {
+                        $this->messages["XSLT"] = "Retenciones ";
+                        $algo = OPENSSL_ALGO_MD5;
+                    } else {
+                        $this->messages["XSLT"] = "Retenciones ";
+                        $algo = OPENSSL_ALGO_SHA1;
+                    }
+                    break;
+                case "2.2":
+
+                    $this->xsl->load("library/sat/xslt/cadenaoriginal_2_2.xslt");
+                    $this->messages["XSLT"] = "Cadena original 2.2 ";
+                    $algo = OPENSSL_ALGO_SHA1;
+                    break;
+                case "3.0":
+
+                    $this->xsl->load("library/sat/xslt/cadenaoriginal_3_0.xslt");
+                    if (substr($this->data['fecha'], 0, 4) < 2011) {
+                        $this->messages["XSLT"] = "Cadena original 3.0 ";
+                        $algo = OPENSSL_ALGO_MD5;
+                    } else {
+                        $this->messages["XSLT"] = "Cadena original 3.0 ";
+                        $algo = OPENSSL_ALGO_SHA1;
+                    }
+                    break;
+                case "3.2":
+                    $this->xsl->load("library/sat/xslt/cadenaoriginal_3_2.xslt");
+                    $this->messages["XSLT"] = "Cadena original 3.2 ";
+                    $algo = OPENSSL_ALGO_SHA1;
+                    break;
+                case "3.3":
+                    $this->xsl->load("library/sat/xslt/cadenaoriginal_3_3.xslt");
+                    $this->messages["XSLT"] = "Cadena original 3.3 ";
+                    $algo = OPENSSL_ALGO_SHA256;
+                    break;
+                default:
+                    $this->messages["XSLT"] = "Version incorrecta " . $this->data['tipo'] . " " . $this->data['version'] . "";
+                    break;
+            }
+        }
+
+
+        $this->xslt->importStyleSheet($this->xsl);
+        $cadena = $this->xslt->transformToXML($this->dom);
+        //$this->messages["Cadena"] = $cadena;
+
+        if ($algo == OPENSSL_ALGO_SHA1) {
+            $sha1 = sha1($cadena);
+            //$this->messages["Encriptacion"] = "Hash SHA1 \n$sha1";
+        } elseif ($algo == OPENSSL_ALGO_SHA256) {
+            $sha256 = hash("sha256", $cadena);
+            //$this->messages["Encriptacion"] = "Hash SHA256 \n$sha256";
+        } else {
+            $md5 = md5($cadena);
+            //$this->messages["Encriptacion"] = "Hash MD5 \n=$md5";
+        }
+        if (!mb_check_encoding($cadena, "utf-8")) {
+            $this->messages["Error"][] = "Error no esta en UTF-8!";
+        }
+
+        /*
+         * El domicilio es opcional, pero si no lo ponemos el xslt del SAT genera
+         * doble pip en el pais ..., dice que el sello es correcto pero los PACs
+         * que validan bien lo rechazan ...
+         * */
+        $doble = preg_match('/.\|\|./', $cadena);
+        if ($doble === 1) {
+            $this->messages["Error"][] = " La cadena tiene doble pipes en medio";
+        }
+
+
+        $pem = (sizeof($this->data['comprobante']["certificado"]) <= 1) ? $this->data['comprobante']["certificado"] : $this->data['comprobante']["certificado"][0];
+        $pem = preg_replace("/[\n|\r|\n\r]/", '', $pem);
+        $pem = preg_replace('/\s\s+/', '', $pem);
+
+
+        if (strlen($pem) == 0) {
+            $this->messages["Error"][] = "No incluye certificado interno, descargarlo del FTP del sat";
+            $pem = get_sat_cert($this->data['comprobante']['no_certificado']);
+        }
+        $cert = "-----BEGIN CERTIFICATE-----\n" . chunk_split($pem, 64) . "-----END CERTIFICATE-----\n";
+        $pubkeyid = openssl_get_publickey(openssl_x509_read($cert));
+
+
+        if (!$pubkeyid) {
+            $this->messages[""] = "Certificado interno Incorrecto, descargarlo del FTP del sat";
+            $pem = $this->get_sat_cert($this->data['comprobante']["no_certificado"]);
+            $cert = "-----BEGIN CERTIFICATE-----" . chunk_split($pem, 64) . "-----END CERTIFICATE-----";
+            $pubkeyid = openssl_get_publickey(openssl_x509_read($cert));
+        }
+
+
+        $sello = base64_decode($this->data['comprobante']["sello"], TRUE);
+        if ($sello === FALSE) {
+            $this->messages["Codificacion BASE64"] = "El sello no esta en formato base64";
+        }
+
+
+        $ok = openssl_verify($cadena, base64_decode($this->data['comprobante']["sello"]), $pubkeyid, $algo);
+
+
+        if ($ok == 1) {
+            $this->messages["Sello"] = "Valido";
+        } else {
+            $this->messages["Sello"] = "Invalido";
+        }
+
+
+        openssl_free_key($pubkeyid);
+        $paso = openssl_x509_parse($cert);
+
+
+    }
+
+
+    public function validaSelloTFD()
+    {
+
+        if ($this->data['comprobante']["sello"] != $this->data["comprobante"]['tfd_sello_cfd']) {
+            $this->messages["Error"][] = "Sello de comprobante es diferente que el sello TFD";
+        }
+
+
+        // Quita la parte del CFDI
+        $texto_tfd = preg_replace('{<cfdi:Comprobante.*<tfd:}is', '<tfd:', $this->data["xml"]);
+        $texto_tfd = preg_replace('{<retenciones:Retenciones.*<tfd:}is', '<tfd:', $texto_tfd);
+        if (strpos($texto_tfd, "</tfd:TimbreFiscalDigital>") !== false) {
+            $texto_tfd = substr($texto_tfd, 0, -65) . ' />';
+        } else {
+            $texto_tfd = trim(preg_replace('{/>.*$}is', '/>', $texto_tfd));
+        }
+
+        // Si no tiene el namespace definido, se agrega
+        if ((strpos($texto_tfd, "xmlns:tfd") === FALSE) && (strpos($texto_tfd, "xmlns:xsi") === FALSE)) {
+            $texto_tfd = substr($texto_tfd, 0, -2) . ' xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>';
+        } else if (strpos($texto_tfd, "xmlns:xsi") === FALSE) {
+            $texto_tfd = substr($texto_tfd, 0, -2) . ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>';
+        } else if (strpos($texto_tfd, "xmlns:tfd") === FALSE) {
+            $texto_tfd = substr($texto_tfd, 0, -2) . ' xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"/>';
+        }
+
+
+        $ok = $this->dom->loadXML($texto_tfd);
+
+
+        // AQUI ME QUEDE 28/07/2017 //
+        // ULTIMA FASE, CAMBIAR LOS OPENSSL_ALGO_SHA256 PARA VERSIONES 3.3 //
+
+
+        if ($this->data["comprobante"]['tfd_version'] == "1.0") {
+            $this->xsl->load("library/sat/xslt/cadenaoriginal_TFD_1_0.xslt");
+            $alg = OPENSSL_ALGO_SHA1;
+        } else {
+            $this->xsl->load("library/sat/xslt/cadenaoriginal_TFD_1_1.xslt");
+            $alg = OPENSSL_ALGO_SHA256;
+        }
+
+        $this->xslt->importStyleSheet($this->xsl);
+        $cadena = $this->xslt->transformToXML($this->dom);
+
+
+        // $this->messages["Cadena TFD"] = $cadena;
+
+        if (!mb_check_encoding($cadena, "utf-8")) {
+            $this->messages["Error"][] = "Error no esta en UTF-8!";
+        }
+
+        $pem = $this->get_sat_cert($this->data['comprobante']['tfd_no_certificado_sat']);
+
+        if(!empty($pem)) {
+            $cert = "-----BEGIN CERTIFICATE-----\n" . chunk_split($pem, 64) . "-----END CERTIFICATE-----\n";
+            // file_put_contents("/tmp/llave.cer.pem",$cert);
+            $pubkeyid = openssl_get_publickey(openssl_x509_read($cert));
+            $ok = openssl_verify($cadena, base64_decode($this->data['comprobante']['tfd_sello_sat']), $pubkeyid, $alg);
+            if ($ok == 1) {
+                $this->messages["Sello TFD"] = "Valido";
+            } else {
+                $this->messages["Sello TFD"] = "Invalido";
+            }
+            openssl_free_key($pubkeyid);
+        }else{
+            $this->messages["Error"]["Certificado TFD"] = "El certificado no existe o esta manipulado";
+        }
+
+    }
+
+    //Valida este XML en el servidor del SAT
+    public function validaSat()
+    {
+        $url = "https://consultaqr.facturaelectronica.sat.gob.mx/consultacfdiservice.svc?wsdl";
+        $soapclient = new \SoapClient($url);
+        $rfc_emisor = utf8_encode($this->data['emisor']['rfc']);
+        $rfc_receptor = utf8_encode($this->data['receptor']['rfc']);
+        $impo = (double)$this->data['comprobante']['total'];
+        $impo = sprintf("%.6f", $impo);
+        $impo = str_pad($impo, 17, "0", STR_PAD_LEFT);
+        $impo = str_replace(",",".",$impo);
+        $uuid = strtoupper($this->data['comprobante']['tfd_uuid']);
+        $factura = "?re=$rfc_emisor&rr=$rfc_receptor&tt=$impo&id=$uuid";
+        $prm = array('expresionImpresa' => $factura);
+        $buscar = $soapclient->Consulta($prm);
+        $this->messages["SAT Respuesta"] = "" . $buscar->ConsultaResult->CodigoEstatus;
+        $this->messages["SAT Estado"] = "" . $buscar->ConsultaResult->Estado;
+
+    }
+
+
+    //descarga certificado de sat al momento y actualiza en la base de datos
+    private function get_sat_cert($no_cert)
+    {
+
+        // No esta en la tabla descarga del SAT
+        $pem = "";
+        $der = "";
+        $p1 = substr($no_cert, 0, 6);
+        $p2 = substr($no_cert, 6, 6);
+        $p3 = substr($no_cert, 12, 2);
+        $p4 = substr($no_cert, 14, 2);
+        $p5 = substr($no_cert, 16, 2);
+        $path1 = "ftp://ftp2.sat.gob.mx/certificados/FEA/$p1/$p2/$p3/$p4/$p5/$no_cert.cer";
+        // Nuevo servidor mas rapido (menos conocido) (Gracias Rene)
+        $path2 = "https://rdc.sat.gob.mx/rccf/$p1/$p2/$p3/$p4/$p5/$no_cert.cer";
+        // Realiza 5 intentos para descargar el certificado
+        // Gracias Rene Calderon
+        //
+        // Se ignora el ceftificado del servidor rdc del sat
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            )
+        );
+        $context = stream_context_create($arrContextOptions);
+        $done = false;
+        $x = 0;
+        while ( ! $done ) {
+            //echo "intento: $x<br>";
+            // Alterna servidor en cada intento ....
+            $path = $path2; //(($x % 2) == 0) ? $path1 : $path2;
+            $der = @file_get_contents($path, false, $context );
+            if ($der) {
+                $done = true;
+            } else {
+                usleep(100000);
+            }
+            if ($x == 5) $done = true;
+            $x++;
+
+        }
+        $pem = base64_encode($der);
+        return $pem;
+    }
+
+
+    //verifica si existe la url
+    public function curl_get_contents($url)
+    {
+        $headers = get_headers($url);
+        return substr($headers[0], 9, 3);
+    }
+
+    //La sintaxis se valida contra el XSD, pero para algunos complementos dieron varias reglas de validacion adicionales
+
+
+
+
+    //como dechex pero para numeros de precision ilimitada
+    private function bcdechex($dec)
+    {
+        $last = bcmod($dec, 16);
+        $remain = bcdiv(bcsub($dec, $last), 16);
+        if ($remain == 0) {
+            return dechex($last);
+        } else {
+            return $this->bcdechex($remain) . dechex($last);
+        }
+    }
+
+
+    public function request()
+    {
+        if (isset($this->messages["Error"])){
+            return json_decode(json_encode(array("status" =>  0,'message' => $this->messages["Error"])));
+        }else{
+            return json_decode(json_encode(array("status" => 1 ,'message' => $this->messages)));
+        }
+
+
+    }
+}
+
+

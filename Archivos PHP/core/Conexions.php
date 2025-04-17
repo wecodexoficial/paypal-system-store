@@ -1,0 +1,60 @@
+<?php
+/**
+ * User: JMartinez
+ * Date: 31/07/2017
+ * Time: 09:57 AM
+ */
+
+class Conexions
+{
+    /**
+     * @return \DB\SQL
+     */
+    public static function dbManager(){
+        /** @var  $f3 */
+        $f3 = Base::instance();
+        /** @var  $connectstr_dbhost */
+        $connectstr_dbhost = $f3->get('hostname');
+        $connectstr_dbname = $f3->get('dbname');
+        $connectstr_dbusername = $f3->get('user');
+        $connectstr_dbpassword = $f3->get('password');
+
+        if ($_SERVER[$f3->get('SERVERVAR')]) {
+            foreach ($_SERVER as $key => $value) {
+
+                if (strpos($key, $f3->get('SERVERVAR')) !== 0) {
+                    continue;
+                }
+                $connectstr_dbhost = preg_replace("/^.*Data Source=(.+?);.*$/", "\\1", $value);
+                $connectstr_dbname = preg_replace("/^.*Database=(.+?);.*$/", "\\1", $value);
+                $connectstr_dbusername = preg_replace("/^.*User Id=(.+?);.*$/", "\\1", $value);
+                $connectstr_dbpassword = preg_replace("/^.*Password=(.+?)$/", "\\1", $value);
+            }
+            $db = new DB\SQL('mysql:host=' .
+                $connectstr_dbhost . ';port=' .
+                $f3->get('port') . ';dbname=' .
+                $connectstr_dbname,
+                $connectstr_dbusername,
+                $connectstr_dbpassword
+            );
+
+
+        }else {
+            $options = array(
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, // generic attribute
+                \PDO::ATTR_PERSISTENT => TRUE,  // we want to use persistent connections
+                \PDO::MYSQL_ATTR_COMPRESS => TRUE, // MySQL-specific attribute
+            );
+            $db = new DB\SQL('mysql:host=' .
+                $connectstr_dbhost . ';port=' .
+                $f3->get('port') . ';dbname=' .
+                $connectstr_dbname,
+                $connectstr_dbusername,
+                $connectstr_dbpassword, $options
+            );
+        }
+
+        return $db;
+    }
+
+}

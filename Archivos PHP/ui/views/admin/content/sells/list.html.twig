@@ -1,0 +1,93 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.sells|capitalize }}</span> - {{ translate.list|capitalize }} {{ translate.of }} {{ translate.sells }}</h4>
+            </div>
+
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+
+    <!-- Basic datatable -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">{{ translate.table_registers }}</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="table  datatable-basic  table-striped table-hover">
+            <thead>
+            <tr class="bg-slate-800">
+                <th width="70%"><span class="text-light">Cliente</span></th>
+                <th><span class="text-light">Nº Transaccion</span></th>
+                <th><span class="text-light">Nº de venta</span></th>
+                             <th><span class="text-light">Moneda de pago</span></th>
+                <th><span class="text-light">Estado pago</span></th>
+                <th><span class="text-light">Estado</span></th>
+                <th><span class="text-light">Datos envio</span></th>
+
+
+                <th width="15%"><span class="text-light">Opciones</span></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for data in data %}
+                <tr>
+                    <td><b>{{ data.client.name}} {{ data.client.lastname}}</b>
+                    </td>
+                    <td>{{ data.sell.transaction_id}}</td>
+
+                    <td>{{ data.sell.build_number}}</td>
+                    <td>{{ data.sell.currency_code_payment}}</td>
+                    <td>{{ data.sell.payment_status}}</td>
+                    <td>
+                    {% if  data.sell.status == 1  %}
+                        Orden confirmada
+                    {% elseif  data.sell.status == 2 %}
+                        = Orden de procesamiento
+                    {% elseif  data.sell.status == 3 %}
+                        Control de calidad
+                    {% elseif  data.sell.status == 4 %}
+                        Producto enviado
+                    {% elseif  data.sell.status == 5 %}
+                        Producto entregado
+                        {% endif %}
+                    </td>
+                    <td><b>Paqueteria:</b><br>{{ data.sell.send_by}}<br>
+                    <b>Numero de envio:</b><br>{{ data.sell.number_send }}</td>
+
+
+                     <td>
+                        <a href="{{ base }}admin/sell/op/{{ data.sell.transaction_id }}" class="btn btn-success btn-xs"><i class="fa fa-location-arrow "></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- /basic datatable -->
+
+    </div>
+
+
+
+
+
+{% endblock %}

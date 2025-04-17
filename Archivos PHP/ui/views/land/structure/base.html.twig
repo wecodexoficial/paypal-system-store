@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+        <!--     HEAD     -->
+        {% include 'land/structure/head.html.twig' %}
+        <title>{% block title %}{% endblock %} - Land </title>
+    {% endblock %}
+    <!--     STYLES     -->
+    {% block styles %}
+        {% include 'land/structure/styles.html.twig' %}
+    {% endblock %}
+</head>
+
+<body>
+
+{% include 'land/structure/topbar.html.twig' %}
+{% include 'land/structure/header.html.twig' %}
+
+<div class="offcanvas-wrapper">
+
+    {% block contenido %}
+    {% endblock %}
+    <!-- Footer -->
+    {% include 'land/structure/footer.html.twig' %}
+</div>
+
+<a class="scroll-to-top-btn" href="#"><i class="icon-arrow-up"></i></a>
+<div class="site-backdrop"></div>
+
+{% block scripts %}
+    {% include 'land/structure/scripts.html.twig' %}
+{% endblock %}
+
+</body>
+</html>

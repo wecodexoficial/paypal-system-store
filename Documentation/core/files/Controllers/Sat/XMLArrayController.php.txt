@@ -1,0 +1,259 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 06/09/2017
+ * Time: 13:33
+ *
+ * Este controlador tendra la funcion de acomodar todos los atributos de el XML de la factura
+ * Seran acomodados en un arreglo para el mejor uso del mismo
+ *
+ */
+
+namespace Sat;
+class XMLArrayController
+{
+
+    public $dom;
+
+    public function __construct()
+    {
+      $this->dom = new \DOMDocument();
+    }
+
+    public function generateArrayXML($doc = null, $providerValid = null)
+    {
+
+       // $texto = file_get_contents($doc);
+        $texto_contenido = file_get_contents($doc);
+        $texto = str_replace('xmlns:schemaLocation','xsi:schemaLocation', $texto_contenido);
+
+        $data_xml = array(); // Informacion de toda la factura
+        $message = array(); // Mensajes de decodificacion de factura
+
+
+        if( substr($texto, 0,3) == pack("CCC",0xef,0xbb,0xbf) ) {
+            $texto = substr($texto, 3);
+            $message[] = "Tenia BOM, Eliminado";
+        }
+
+        if (!mb_check_encoding($texto,"utf-8")) {
+            $message[] = "Error en XML, no esta en UTF-8!";
+        }
+
+        $nuevo = utf8_decode($texto);
+        if (mb_check_encoding($nuevo,"utf-8")) {
+            $message[] = "Sigue siendo utf8, usa decode";
+            $texto = $nuevo;
+        }
+
+        // Quita Addenda solo valida fiscal //
+        $texto = preg_replace('{<Addenda.*/Addenda>}is', '<Addenda/>', $texto);
+        $texto = preg_replace('{<cfdi:Addenda.*/cfdi:Addenda>}is', '<cfdi:Addenda/>', $texto);
+
+
+
+        $this->dom->loadXML($texto);
+        libxml_use_internal_errors(true);
+        $this->dom->preserveWhiteSpace = false;
+
+        if(!$this->dom){
+            $message[] = "Formato de XML incorrecto";
+        }
+
+        $tipo = (strpos($texto, "cfdi:Comprobante") !== FALSE) ? (strpos($texto, "<Comprobante") !== FALSE) ? (strpos($texto, "retenciones:Retenciones") !== FALSE) ?: 'cfd' : 'cfdi' : 'retenciones';
+
+        // Verificacion de tipo de documento //
+        if ($tipo!=="retenciones") {
+            $root =  $this->dom->getElementsByTagName('Comprobante')->item(0);
+            $version = $root->getAttribute("version");
+            if ($version==null) $version = $root->getAttribute("Version");
+        } else {
+            $root =  $this->dom->getElementsByTagName('Retenciones')->item(0);
+            $version = $root->getAttribute("Version");
+        }
+
+
+
+
+        // ELEMENTOS DEL XML //
+        $Receptor = $root->getElementsByTagName('Receptor')->item(0); // Receptor
+        $Emisor = $root->getElementsByTagName('Emisor')->item(0);  // Emisor
+        $TFD = $root->getElementsByTagName('TimbreFiscalDigital')->item(0);  // Timbre
+        $Comprobante = $this->dom->getElementsByTagName('Comprobante')->item(0);
+        $Conceptos = $this->dom->getElementsByTagName('Conceptos');
+        $Impuestos = $this->dom->getElementsByTagName('Impuestos')->item(0);
+        $Retenciones = $this->dom->getElementsByTagName('Retencion');
+        $Traslados = $this->dom->getElementsByTagName('Traslado');
+
+
+        // ATRIBUTOS DEL XML DE LOS ELEMENTOS //
+        if ($tipo == "retenciones") {
+            $emisor_rfc = $Emisor->getAttribute('RFCEmisor');
+            $emisor_rfc = utf8_decode($emisor_rfc);
+            $receptor_rfc = $Receptor->getAttribute('RFCRecep');
+            $receptor_rfc = utf8_decode($receptor_rfc);
+            $version = $root->getAttribute("Version");
+            $no_certificado = $root->getAttribute("NumCert");
+            $certificado = $root->getAttribute("Cert");
+            $sello = $root->getAttribute("Sello");
+            $Totales = $root->getElementsByTagName('Totales')->item(0);
+            $total = $Totales->getAttribute("montoTotGrav");
+        } else {
+
+            // PARAMETROS SENTENCIA CORTA SI NO ES  RETENCION //
+            $total = ($version == '3.2') ? $root->getAttribute('total') : $root->getAttribute('Total');
+            $no_certificado = ($version == '3.2') ? $root->getAttribute('noCertificado') : $root->getAttribute('NoCertificado');
+            $certificado = ($version == '3.2') ? $root->getAttribute('certificado') : $root->getAttribute('Certificado');
+            $sello = ($version == '3.2') ? $root->getAttribute('sello') : $root->getAttribute('Sello');
+            $emisor_rfc = ($version == '3.2') ? $Emisor->getAttribute('rfc') : $Emisor->getAttribute('Rfc');
+            $emisor_rfc = utf8_decode($emisor_rfc);
+            $receptor_rfc = ($version == '3.2') ? $Receptor->getAttribute('rfc') : $Receptor->getAttribute('Rfc');
+            $receptor_rfc = utf8_decode($receptor_rfc);
+
+        }
+
+
+        // ARREGLO DE EMISOR POR SENTENCIA CORTA //
+        $emisorArray = array(
+            'rfc' => ($version == '3.2') ? $Emisor->getAttribute('rfc') : $Emisor->getAttribute('Rfc'),
+            'nombre' => ($version == '3.2') ? $Emisor->getAttribute('nombre') : $Emisor->getAttribute('Nombre'),
+            'direccion' => ($version == '3.2') ? ($Emisor->getElementsByTagName('DomicilioFiscal')->length == 0) ? '' :
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('calle') . " " .
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('noExterior') . " " .
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('colonia') . " " .
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('municipio') . " " .
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('estado') . " " .
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('pais') . " " .
+                $Emisor->getElementsByTagName('DomicilioFiscal')->item(0)->getAttribute('codigoPostal') : $Emisor->getAttribute('Direcccion')
+        );
+
+        // ARREGLO DE RECEPTOR POR SENTENCIA CORTA //
+        $receptorArray = array(
+            'rfc' => ($version == '3.2') ? $Receptor->getAttribute('rfc') : $Receptor->getAttribute('Rfc'),
+            'nombre' => ($version == '3.2') ? $Receptor->getAttribute('nombre') : $Receptor->getAttribute('Nombre'),
+            'direccion' => ($version == '3.2') ? $Receptor->getAttribute('direccion') : $Receptor->getAttribute('Direcccion')
+        );
+
+
+        // ARREGLO DE CONCEPTOS POR SENTENCIA CORTA //
+        $conceptosArray = array();
+
+        for ($i = 0; $i < $Conceptos->item(0)->getElementsByTagName("Concepto")->length; $i++) {
+            $concepto_data = array(
+                'cantidad' => ($version == '3.2') ? $Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('cantidad') : $Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('Cantidad'),
+                'unidad' => ($version == '3.2') ? $Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('unidad') : $Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('Unidad'),
+                'descripcion' => ($version == '3.2') ? str_replace("'", "", $Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('descripcion')) : str_replace("'", "", $Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('Descripcion')),
+                'valor_unitario' => ($version == '3.2') ? number_format($Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('valorUnitario'),2) : number_format($Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('ValorUnitario'),2),
+                'importe' => ($version == '3.2') ? number_format($Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('importe'),2) : number_format($Conceptos->item(0)->getElementsByTagName("Concepto")->item($i)->getAttribute('Importe'),2)
+            );
+            $conceptosArray[] = $concepto_data;
+        }
+
+
+        // ARREGLO COMPROANTE POR SENTENCIA CORTA //
+        $comprobanteArray = array(
+            'total' => ($version == '3.2') ? $root->getAttribute('total') : $root->getAttribute('Total'),
+            'serie' => ($version == '3.2') ? $Comprobante->getAttribute('serie') : $Comprobante->getAttribute('Serie'),
+            'folio' => ($version == '3.2') ? $Comprobante->getAttribute('folio') : $Comprobante->getAttribute('Folio'),
+            'fecha' => ($version == '3.2') ? $Comprobante->getAttribute('fecha') : $Comprobante->getAttribute('Fecha'),
+            //      'moneda'             => ($providerValid) ? ($Comprobante->getAttribute('Moneda')) ? $Comprobante->getAttribute('Moneda') : $Company->getCurrency() : '',
+            'iva' => ($version == '3.2') ? $Comprobante->getAttribute('moneda') : $Comprobante->getAttribute('Moneda'),
+            'tipo' => ($version == '3.2') ? $Comprobante->getAttribute('tipoDeComprobante') : $Comprobante->getAttribute('TipoDeComprobante'),
+            'certificado_emisor' => ($version == '3.2') ? $Comprobante->getAttribute('noCertificado') : $Comprobante->getAttribute('NoCertificado'),
+            'tfd_no_certificado_sat' => ($version == '3.2') ? $TFD->getAttribute('noCertificadoSAT') : $TFD->getAttribute('NoCertificadoSAT'),
+            'tfd_sello_cfd' => ($version == '3.2') ? $TFD->getAttribute('selloCFD') : $TFD->getAttribute('SelloCFD'),
+            'tfd_sello_sat' => ($version == '3.2') ? $TFD->getAttribute('selloSAT') : $TFD->getAttribute('SelloSAT'),
+            'tfd_fecha' => $TFD->getAttribute('FechaTimbrado'),
+            'tfd_version' => ($version == '3.2') ? $TFD->getAttribute('version') : $TFD->getAttribute('Version'),
+            'tfd_uuid' => $TFD->getAttribute('UUID'),
+            'tipo_cambio' => $Comprobante->getAttribute('TipoCambio'),
+            'no_certificado' => $no_certificado,
+            'sello' => $sello,
+            'certificado' => $certificado
+        );
+
+
+
+        // ARREGLO COMPROANTE POR SENTENCIA CORTA //
+        $cabeceraArray = array(
+            'folio' => ($version == '3.2') ? $Comprobante->getAttribute('folio') : $Comprobante->getAttribute('Folio'),
+            'fecha' => ($version == '3.2') ? $Comprobante->getAttribute('fecha') : $Comprobante->getAttribute('Fecha'),
+            'tipo' => ($version == '3.2') ? $Comprobante->getAttribute('tipoDeComprobante') : $Comprobante->getAttribute('TipoDeComprobante'),
+            'no_certificado' => ($version == '3.2') ? $Comprobante->getAttribute('noCertificado') : $Comprobante->getAttribute('NoCertificado'),
+            'no_certificado_sat' => ($version == '3.2') ? $TFD->getAttribute('noCertificadoSAT') : $TFD->getAttribute('NoCertificadoSAT'),
+            'uuid' => $TFD->getAttribute('UUID')
+        );
+
+        $impuestosArray = array();
+        $totalImpuestosRetenidos = 0.0;
+        $totalImpuestosTrasladados = 0.0;
+        $arr_retenciones = [];
+
+
+        // ARREGLO DE RETENCIONES POR SENTENCIA CORTA //
+        foreach ($Retenciones as $retencion) {
+
+            $impuesto_data = array(
+                'impuesto' => 'Retención ' . ($version == '3.2') ? $retencion->getAttribute('impuesto') : $retencion->getAttribute('Impuesto'),
+                'tipo' => 'R',
+                'tasa' => ($version == '3.2') ? $retencion->getAttribute('tasa') : $retencion->getAttribute('Tasa'),
+                'importe' => ($version == '3.2') ? $retencion->getAttribute('importe') : $retencion->getAttribute('Importe'),
+                'nombre_retencion' => ($version == '3.2') ? $retencion->getAttribute('impuesto') : $retencion->getAttribute('Impuesto')
+            );
+
+            $arr_retenciones[] = [
+                'impuesto' => ($version == '3.2') ? $retencion->getAttribute('impuesto') : $retencion->getAttribute('Impuesto'),
+                'tipo' => 'R',
+                'tasa' => ($version == '3.2') ? $retencion->getAttribute('tasa') : $retencion->getAttribute('Tasa'),
+                'importe' => ($version == '3.2') ? $retencion->getAttribute('importe') : $retencion->getAttribute('Importe')
+            ];
+            $totalImpuestosRetenidos += ($version == '3.2') ? $retencion->getAttribute('importe') : $retencion->getAttribute('Importe');
+            $impuestosArray[] = $impuesto_data;
+
+        }
+
+        // ARREGLO DE TRASNLADOS POR SENTENCIA CORTA //
+        foreach ($Traslados as $traslado) {
+            $impuesto_data = array(
+                'impuesto' => ($version == '3.2') ? $traslado->getAttribute('impuesto') : $traslado->getAttribute('Impuesto'),
+                'tipo' => 'T',
+                'tasa' => ($version == '3.2') ? $traslado->getAttribute('tasa') : $traslado->getAttribute('Tasa'), $traslado->getAttribute('Tasa'),
+                'importe' => ($version == '3.2') ? $traslado->getAttribute('importe') : $traslado->getAttribute('Importe')
+            );
+            $iva = ($version == '3.2') ? $traslado->getAttribute('importe') : $traslado->getAttribute('Importe');
+            $totalImpuestosTrasladados += ($version == '3.2') ? $traslado->getAttribute('importe') : $traslado->getAttribute('Importe');
+            $impuestosArray[] = $impuesto_data;
+        }
+
+        // ARREGLO DE TOTALES POR SENTENCIA CORTA //
+        $totalesArray = array(
+            'impuestos' => $impuestosArray,
+            'subtotal' => ($version == '3.2') ? number_format($Comprobante->getAttribute('subTotal'),2) : number_format($Comprobante->getAttribute('SubTotal'),2),
+            'total' => ($version == '3.2') ? number_format($Comprobante->getAttribute('total'),2) : number_format($Comprobante->getAttribute('Total')),
+            'iva' => $iva,
+        );
+
+
+        // ARREGLO FINAL DE FACTURA XML //
+        $factura = array(
+            'xml' => $texto_contenido,
+            'tipo' => $tipo,
+            'version' => $version,
+            'emisor' => $emisorArray,
+            'receptor' => $receptorArray,
+            'cabecera' => $cabeceraArray,
+            'comprobante' => $comprobanteArray,
+            'conceptos' => $conceptosArray,
+            'totales' => $totalesArray,
+            'retenciones' => $arr_retenciones,
+            'tl_retenciones' => number_format($totalImpuestosRetenidos,2),
+        );
+
+        $data_xml["messages"] = $message;
+        $data_xml["data"] = $factura;
+        return $data_xml;
+    }
+
+}

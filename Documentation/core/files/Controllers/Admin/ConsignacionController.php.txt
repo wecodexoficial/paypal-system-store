@@ -1,0 +1,54 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 10/09/2017
+ * Time: 1:26
+ */
+
+namespace Admin;
+
+
+use Sat\XMLArrayController;
+use Sat\ValidatorController;
+class ConsignacionController extends \MasterController
+{
+    public $arr_generate;
+    public $validate;
+    public $file;
+    function __construct()
+    {
+        parent::__construct();
+        $this->arr_generate = new XMLArrayController();
+        $this->file = new \UploadFile();
+
+    }
+
+
+    public function upload(){
+
+        // Recibe la informacion del formulario
+        $data = self::httpFile('data_file');
+        $source = $this->file->upload($data,array('xml'),4,"documents/test");
+       // \Responses::message($source["message"], $source["status"]);
+
+        $data = $this->arr_generate->generateArrayXML($source['path']);
+        $this->validate = new ValidatorController($data["data"]);
+        $this->validate->valida_xsd();
+        $this->validate->validaSello();
+
+        $request = $this->validate->request();
+        $message = null;
+        foreach($request as $re){
+            $message .= $re;
+        }
+
+        \Responses::message($message,"CORRECTO");
+
+
+    }
+
+
+
+
+}

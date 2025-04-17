@@ -1,0 +1,119 @@
+<!-- Main sidebar -->
+<div class="sidebar sidebar-main">
+    <div class="sidebar-content">
+
+        <!-- User menu -->
+        <div class="sidebar-user">
+            <div class="category-content">
+                <div class="media">
+                    <a href="#" class="media-left"><img src="{{ base }}ui/assets/templates/limitles/images/placeholder.jpg" class="img-circle img-sm" alt=""></a>
+                    <div class="media-body">
+                        <span class="media-heading text-semibold">{{ (session_data_user.name) }}</span>
+                        <div class="text-size-mini text-muted">
+                            <i class="icon-user text-size-small"></i> {{ (session_data_user.id_rol) }}
+                        </div>
+                    </div>
+
+                    <div class="media-right media-middle">
+                        <ul class="icons-list">
+                            <li>
+                                <a href="#"><i class="icon-cog3"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /user menu -->
+
+
+        <!-- Main navigation -->
+        <div class="sidebar-category sidebar-category-visible">
+            <div class="category-content no-padding">
+                <ul class="navigation navigation-main navigation-accordion">
+
+                    <!-- Main -->
+                    <li class="navigation-header"><span>{{ translate.main }}</span> <i class="icon-menu" title="Main pages"></i></li>
+                    <li class="active"><a href="index.html"><i class="icon-home4"></i> <span>{{ translate.dashboard }}</span></a></li>
+
+                    <li>
+                        <a href="{{ base }}admin/sells"><i class="icon-bag"></i> <span>{{ translate.sells|capitalize }}</span></a>
+
+                    </li>
+                    <li>
+                        <a href="#"><i class=" icon-basket"></i> <span>{{ translate.products|capitalize }}</span></a>
+                        <ul>
+                            <li><a href="{{ base }}admin/product">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.products }} </a></li>
+                            <li><a href="{{ base }}admin/product/add">{{ translate.add|capitalize }} {{ translate.product }}</a></li>
+
+
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="icon-price-tag2"></i> <span >{{ translate.categories|capitalize }}</span></a>
+                        <ul>
+                            <li ><a href="{{ base }}admin/category">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.categories }}</span></a></li>
+                            <li><a href="{{ base }}admin/category/add">{{ translate.add|capitalize }} {{ translate.category }}</a></li>
+
+
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#"><i class=" icon-star-full2"></i> <span >{{ translate.marks|capitalize }}</span></a>
+                        <ul>
+                            <li ><a href="{{ base }}admin/mark">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.marks }}</span></a></li>
+                            <li><a href="{{ base }}admin/mark/add">{{ translate.add|capitalize }} {{ translate.mark }}</a></li>
+
+
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#"><i class="icon-users"></i> <span>{{ translate.clients|capitalize }}</span></a>
+                        <ul>
+                            <li><a href="{{ base }}admin/client">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.clients }}</a></li>
+                            <li><a href="{{ base }}admin/client/add">{{ translate.add|capitalize }} {{ translate.client }}</a></li>
+
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class=" icon-collaboration"></i> <span>{{ translate.providers|capitalize }}</span></a>
+                        <ul>
+                            <li><a href="{{ base }}admin/provider">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.providers }}</a></li>
+                            <li><a href="{{ base }}admin/provider/add">{{ translate.add|capitalize }} {{ translate.provider }}</a></li>
+
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class=" icon-image-compare"></i> <span>{{ translate.slideshows|capitalize }}</span></a>
+                        <ul>
+                            <li><a href="{{ base }}admin/slider">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.slideshows }}</a></li>
+                            <li><a href="{{ base }}admin/slider/add">{{ translate.add|capitalize }} {{ translate.slideshow }}</a></li>
+
+
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class=" icon-user-tie"></i> <span>{{ translate.users|capitalize }}</span></a>
+                        <ul>
+                            <li><a href="{{ base }}admin/user">{{ translate.list|capitalize }} {{ translate.of }} {{ translate.users }}</a></li>
+                            <li><a href="{{ base }}admin/user/add">{{ translate.add|capitalize }} {{ translate.user }}</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="{{ base }}admin/config/website"><i class=" icon-cog4"></i> <span>{{ translate.settings|capitalize }}</span></a>
+                    </li>
+                    <!-- /data visualization -->
+
+
+
+                </ul>
+            </div>
+        </div>
+        <!-- /main navigation -->
+
+    </div>
+</div>
+<!-- /main sidebar -->

@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: JMartinez
+ * Date: 19/06/2017
+ * Time: 02:48 PM
+ */
+
+class Permissions
+{
+
+    const
+        ERROR_CODE = 'ERROR.code',
+        STATUS = 'ERROR.status',
+        TEXT = 'ERROR.text';
+
+    public static function securityModule($enabled = false)
+    {
+        $f3 = Base::instance();
+        if ($enabled) {
+
+            if (!$f3->get('SESSION.auth')) {
+                $f3->redirect('GET|HEAD /admin*', '/login');
+            } else {
+                $f3->config('config/secure/access.ini');
+                Permissions::getAllPermissions();
+                $f3->config('config/routes/admin.ini');
+            }
+        }else{
+            $f3->config('config/routes/admin.ini');
+        }
+
+
+    }
+
+    /** Load The routes Permissions */
+    public static function getAllPermissions()
+    {
+
+        $access = Access::instance();
+        $url = $_SERVER['REQUEST_URI'];
+        $base_path = explode("/", $url);
+        $rol = Base::instance()->get("SESSION.auth[0].id_rol");
+        if ("/" . $base_path[1] == "/admin" ) {
+
+            if (!$access->granted($url, $rol)) {
+                Base::instance()->set(self::ERROR_CODE, 401);
+                Base::instance()->set(self::STATUS, 'Access Violation');
+                Base::instance()->set(self::TEXT, 'Not enough Permissions');
+                ErrorController::Error();
+            }
+        }
+    }
+}
+
+

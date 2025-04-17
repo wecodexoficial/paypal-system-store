@@ -1,0 +1,41 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} Completado {% endblock %}
+{% block contenido %}
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        <!-- Page Title-->
+        <div class="page-title">
+            <div class="container">
+                <div class="column">
+                    <h1>Completado</h1>
+                </div>
+                <div class="column">
+                    <ul class="breadcrumbs">
+                        <li><a href="index-2.html">Inicio</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li>Completado</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content-->
+        <div class="container padding-bottom-3x mb-2">
+            <div class="card text-center">
+                <div class="card-block padding-top-2x">
+                    <h3 class="card-title">¡Gracias por su orden!</h3>
+                    <p class="card-text">{{ payment_status.message }}.</p>
+                    <p class="card-text">Su numero de compra es el siguiente: <span class="text-medium">{{ payment_status.payment_info.transaction_id }}</span></p>
+                    <p class="card-text">Recibirá un correo electrónico en breve con la confirmación de su pedido.
+
+                    </p>
+                    <div class="padding-top-1x padding-bottom-1x"><a class="btn btn-outline-secondary" href="{{ base }}">Volver a comprar</a><a class="btn btn-outline-primary" href="{{ base }}client/purchases"><i class="icon-location"></i>&nbsp;Ver estatus de compras</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

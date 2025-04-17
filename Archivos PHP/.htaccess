@@ -1,0 +1,69 @@
+# Enable rewrite engine and route requests to framework
+RewriteEngine On
+
+# Some servers require you to specify the `RewriteBase` directive
+# In such cases, it should be the path (relative to the document root)
+# containing this .htaccess file
+#
+# RewriteBase /
+
+
+RewriteRule ^(/*)\/|\.ini$ - [R=404]
+
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php [L,QSA]
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
+<FilesMatch "\.(htaccess|htpasswd|ini|phps|log|bak|txt)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
+
+# Deflate Compression by FileType
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE text/javascript
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/atom_xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/x-shockwave-flash
+</IfModule>
+
+
+
+# turns cache on for 1 month
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType text/javascript "access plus 1 month"
+ExpiresByType text/html "access plus 1 month"
+ExpiresByType application/javascript "access plus 1 month"
+ExpiresByType application/x-javascript "access plus 1 month"
+ExpiresByType application/xhtml-xml "access plus 600 seconds"
+ExpiresByType image/gif "access plus 1 month"
+ExpiresByType image/jpeg "access plus 1 month"
+ExpiresByType image/png "access plus 1 month"
+ExpiresByType image/x-icon "access plus 1 month"
+</IfModule>
+<ifmodule mod_headers.c>
+<filesmatch "\.(ico|jpe?g|png|gif|swf)$">
+Header set Cache-Control "max-age=2592000, public"
+</filesmatch>
+<filesmatch "\.(css)$">
+Header set Cache-Control "max-age=604800, public"
+</filesmatch>
+<filesmatch "\.(js)$">
+Header set Cache-Control "max-age=216000, private"
+</filesmatch>
+<filesmatch "\.(x?html?|php)$">
+Header set Cache-Control "max-age=600, private, must-revalidate"
+</filesmatch>
+</ifmodule>

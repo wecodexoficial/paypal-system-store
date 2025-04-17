@@ -1,0 +1,39 @@
+<?php
+/**
+ * Fecha: 19/07/2017
+ * Hora: 05:32 PM
+ */
+namespace Auth;
+
+class Repository
+{
+    public static function getProfile($username)
+    {
+        return "SELECT
+                common_user.password,
+                common_user.id_usuario
+                FROM
+                common_user WHERE id_usuario='$username'";
+    }
+
+    public static function getPermisions($user)
+    {
+        return "SELECT
+                    common_user_rol.id_rol
+                    FROM
+                    common_user_rol where id_usuario='$user'";
+    }
+
+    public static function getProfiles($profile, $profile2) {
+        return "SELECT 
+                    common_user.id_usuario, 
+                    common_user.id_rol 
+                FROM 
+                usuario_datos               
+                INNER JOIN usuario_rol ON usuario_rol.id_usuario = usuario.id_usuario 
+                WHERE usuario_rol.id_rol='$profile'
+                OR usuario_rol.id_rol='$profile2'";
+
+    }
+
+}

@@ -1,0 +1,249 @@
+<?php
+
+/**
+ * Class ErrorController
+ *
+ * This class handle all error in the system
+ */
+class ErrorController
+{
+    /** @var  | This declared var */
+    static $master;
+    const
+        ERROR_CODE = 'ERROR.code',
+        STATUS = 'ERROR.status',
+        TEXT = 'ERROR.text',
+        RESPONSE = 'You need set PRO or DEV mode on  ERROR_MODE in config.ini file',
+        ADMIN = 'admin',
+        LOGS = 'logs/',
+        ROOT = 'DOCUMENT_ROOT';
+
+    public static $mode = 'DEV';
+    public static $ajax = false;
+
+    /**
+     * General Error, Handle an error and select the correct type of it.
+     *
+     */
+    public static function Error()
+    {
+        $code = Base::instance()->get(self::ERROR_CODE);
+        $status = Base::instance()->get(self::STATUS);
+        $text = Base::instance()->get(self::TEXT);
+        if (self::$mode) {
+            switch (self::$mode) {
+
+                case 'DEV':
+                    self::logCreator();
+                    (self::$ajax)
+                        ? self::ajaxError($code, $status, $text)
+                        : self::httpError($code, $status, $text);
+                    break;
+                case 'PRO':
+                    self::logCreator();
+                    (self::$ajax)
+                        ? self::ajaxError($code, $status, null)
+                        : self::httpError($code, $status, null);
+                    break;
+                default:
+                    self::logCreator();
+                    (self::$ajax)
+                        ? self::ajaxError($code, $status, $text)
+                        : self::httpError($code, $status, $text);
+                    break;
+            }
+        } else {
+            echo self::RESPONSE;
+        }
+
+    }
+
+    /**
+     * catch all single http calls errors
+     * Select the type of error
+     * @param $code
+     * @param $status
+     * @param null $text
+     */
+
+    private static function httpError($code, $status, $text = null)
+    {
+        /** @var  $url */
+        $url = explode("/", $_SERVER['REQUEST_URI'])[1];
+        /** @var  $cause */
+        $cause = explode('[', $text);
+        /** @var  $trace */
+        $trace = explode($_SERVER[self::ROOT], $cause[1]);
+        /** @var  $trace : Determinate line */
+        $trace = explode(':', $trace[1]);
+        /** Render Variables  */
+        @new MasterController();
+        MasterController::$viewparams['code'] = $code;
+        MasterController::$viewparams['status'] = $status;
+        if ($text) {
+            MasterController::$viewparams['cause'] = '[Type] ' . $cause[0];
+            if ($cause[0] == 'SQLSTATE') {
+                $sql_cause = explode(':', $cause[1]);
+                $sql_trace = explode(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), Base::instance()->get('ERROR.trace'));
+                MasterController::$viewparams['trace'] = '[Trace] ' . explode(']', $sql_trace[6])[0];
+                MasterController::$viewparams['line'] = '[SLQ ERROR] ' . $sql_cause[1] . $sql_cause[2] . "\n";
+            } else {
+                if ($trace[0]) {
+                    MasterController::$viewparams['trace'] = '[Trace] ' . $trace[0];
+                }
+                if ($trace[1]) {
+                    MasterController::$viewparams['line'] = '[Line] ' . $trace[1];
+                }
+                MasterController::$viewparams['suggestions'] = '[Suggestions] ' . self::suggestions($code);
+            }
+        }
+        if ($url == self::ADMIN && Base::instance()->get('SESSION.auth')) {
+            MasterController::render(Base::instance()->get('ERROR_ADMIN'));
+        } else {
+            MasterController::render(Base::instance()->get('ERROR_LAND'));
+        }
+    }
+
+    /**
+     * Call all ajax errors
+     *
+     * @param $code | error code
+     * @param $status | error Status
+     * @param null $text | error message
+     */
+    private static function ajaxError($code, $status, $text = null)
+    {
+        Responses::ajaxFail($code, $status, $text);
+    }
+
+    /** create a new log file and folder */
+    private static function logCreator()
+    {
+        $datetime = new DateTime();
+        if (!file_exists("logs")) {
+            mkdir("logs");
+        }
+        $log = new Log(self::LOGS . $datetime->format('d-m-Y') . '.log');
+        $log->write(self::formatLog());
+    }
+
+    /** Format of log text */
+    private static function formatLog()
+    {
+        $cause = explode('[', Base::instance()->get(self::TEXT));
+        $trace = explode($_SERVER[self::ROOT], $cause[1]);
+        $trace = explode(':', $trace[1]);
+
+        if ($cause[0] == 'SQLSTATE') {
+            if ($cause[1]) {
+                $status = " Status [" . str_replace(']', '', $cause[1]) . "]\n";
+            } else {
+                $status = null;
+            }
+            if ($cause[2]) {
+                $db = " Db error [" . str_replace(']', '', $cause[2]) . "\n";
+            } else {
+                $db = null;
+            }
+            $error = "--\n Error [" . Base::instance()->get(self::ERROR_CODE) . "]\n" .
+                " Type [" . Base::instance()->get(self::STATUS) . "]\n" .
+                " Cause [" . $cause[0] . "]\n" .
+                $status .
+                $db .
+                '-----------------------------------------------------------';
+        } else {
+
+            if ($trace[0]) {
+                $tracer = " Trace [" . $trace[0] . "]\n";
+            } else {
+                $tracer = null;
+            }
+            if ($trace[1]) {
+                $liner = " Line [" . $trace[1] . "\n";
+            } else {
+                $liner = null;
+            }
+            $error = "--\n Error [" . Base::instance()->get(self::ERROR_CODE) . "]\n" .
+                " Type [" . Base::instance()->get(self::STATUS) . "]\n" .
+                " Cause [" . $cause[0] . "]\n" .
+                $tracer .
+                $liner .
+                '-----------------------------------------------------------';
+        }
+
+        return $error;
+
+
+    }
+
+    /**
+     * Generate a string whit  common solutions
+     *
+     * @param $code
+     * @return null|string
+     */
+    private static function suggestions($code)
+    {
+        $sugestion = null;
+        switch ($code) {
+            case 404:
+                $sugestion = "1. Check Routes files \n
+                              2. Check file existence \n
+                              3. Check http refer \n
+                              4. Check render Route \n
+                ";
+                break;
+            case 500;
+                $sugestion = "1. Check code syntax's \n
+                              2. Check database config file
+                              3. Check Config Files
+                              4. Check network config
+                              5. Check Master controller
+                ";
+                break;
+            default :
+
+                break;
+
+        }
+        return $sugestion;
+    }
+
+    /** Log Constant */
+    const LOG = 'PARAMS.log';
+
+    /**
+     * Log downloader class
+     * Require a correct data format dd-mm-yyyy
+     * Return a log file in txt format
+     */
+    public static function getLogs()
+    {
+        $fichero = null;
+        if (Base::instance()->get(self::LOG)) {
+            if (Base::instance()->get('PARAMS.key') == Base::instance()->get('LOG_PASS')) {
+                if (file_exists(self::LOGS . Base::instance()->get(self::LOG) . '.log')) {
+                    $fichero = self::LOGS . Base::instance()->get(self::LOG) . '.log';
+                } else {
+                    Base::instance()->error(404);
+                }
+            } else {
+                Base::instance()->error(404);
+            }
+        } else {
+            Base::instance()->error(404);
+        }
+        if (file_exists($fichero)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . basename($fichero) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($fichero));
+            readfile($fichero);
+            exit;
+        }
+
+    }
+}

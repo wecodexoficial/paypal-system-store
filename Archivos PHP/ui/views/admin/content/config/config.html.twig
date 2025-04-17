@@ -1,0 +1,147 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">Configuraciones</span></h4>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+    <!-- Basic datatable -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">Configuraciones generales</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <form class="formNormal " id="/admin/config/update" action="#" method="post">
+                <div class="col-md-12">
+                    <div class="form-group form-group-material">
+                        <label class="control-label">Nombre del sitio</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class=" icon-star-full2"></i></span>
+                            <input type="text" name="ws_name" value="{{ data.ws_name }}" placeholder="Nombre del sitio web" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Telefono </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-phone"></i></span>
+                                <input type="text" name="ws_phone" value="{{ data.ws_phone }}"  placeholder="Nombre clave de marca" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Correo de contacto </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-envelop"></i></span>
+                                <input type="text" name="ws_mail_contact" value="{{ data.ws_mail_contact }}"  placeholder="Correo eletronico de contacto" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Correo de informacion </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-envelop"></i></span>
+                                <input type="text" name="ws_mail_info" value="{{ data.ws_mail_info }}"  placeholder="Correo electronico de informacion" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Link Facebook </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-facebook"></i></span>
+                                <input type="text" name="ws_facebook" value="{{ data.ws_facebook }}"  placeholder="Facebook" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Link Twitter </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-twitter"></i></span>
+                                <input type="text" name="ws_twitter" value="{{ data.ws_twitter }}"  placeholder="Twitter" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Link Youtube </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-youtube"></i></span>
+                                <input type="text" name="ws_youtube" value="{{ data.ws_youtube }}"  placeholder="Youtube" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Link Google+ </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-google"></i></span>
+                                <input type="text" name="ws_googlemas" value="{{ data.ws_googlemas }}"  placeholder="Google +" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Link Instagram </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-instagram"></i></span>
+                                <input type="text" name="ws_instagram" value="{{ data.ws_instagram }}"  placeholder="Instagram" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="col-sm-12">
+                        <label class="control-label">Logotipo</label>
+                        <input type="file" name="image" class="file-input">
+                        <br><br>
+                    </div>
+
+
+                        <div class="text-right">
+                            <button type="reset" class="btn btn-default" id="reset">Limpiar <i
+                                        class="icon-reload-alt position-right"></i></button>
+                            <button type="submit" class="btn btn-primary">Guardar configuraciones <i
+                                        class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                        </form>
+
+                    </div>
+                </div>
+    </div>
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

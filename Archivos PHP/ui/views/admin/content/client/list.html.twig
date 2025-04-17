@@ -1,0 +1,83 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.client|capitalize }}</span> - {{ translate.list|capitalize }} {{ translate.of }} {{ translate.clients }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/client/add" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-add"></i></b> {{ translate.add|capitalize }} {{ translate.client }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+        <!-- Basic datatable -->
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">{{ translate.table_registers }}</h5>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <table class="table datatable-basic  table-striped table-hover">
+                <thead>
+                <tr class="bg-slate-800">
+                    <th><span class="text-light">Usuario</span></th>
+                    <th width="25%"><span class="text-light">Nombre completo</span></th>
+                    <th><span class="text-light">Correo </span></th>
+                    <th width="15%"><span class="text-light">Telefono</span></th>
+                    <th><span class="text-light">Estado</span></th>
+                    <th width="10%"><span class="text-light">Opciones</span></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for data in table %}
+                    <tr>
+                        <td>{{ data.id_user }}</td>
+                        <td>{{ data.name }} {{ data.lastname }}</td>
+                        <td>{{ data.email }}</td>
+                        <td>{{ data.phone }}</td>
+                        <td> {% if (data.is_active == "SI") %} Activo {% endif %}  </td>
+
+                        <td>
+                            <a href="{{ base }}admin/client/edit/{{ data.id_user }}" class="btn btn-default"><i class="fa fa-pencil"></i></a>
+                            <form class="formNormal" id="{{ base }}admin/client/delete" action="#" method="post">
+                                <input type="hidden" name="id_user" value="{{ data.id_user }}" >
+                                <input type="hidden" name="id_rol" value="{{ data.id_rol }}" >
+                                <button type="submit" class="btn btn-default"><i class="fa fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- End Striped Table -->
+    </div>
+
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+
+{% endblock %}

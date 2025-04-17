@@ -1,0 +1,87 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.products|capitalize }}</span> - {{ translate.list|capitalize }} {{ translate.of }} {{ translate.products }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/product/add" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-add"></i></b> {{ translate.add|capitalize }} {{ translate.product }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+    <!-- Basic datatable -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">{{ translate.table_registers }}</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="table datatable-basic  table-striped table-hover">
+            <thead>
+            <tr class="bg-slate-800">
+                <th><span class="text-light">Nombre</span></th>
+                <th><span class="text-light">Unidad</span></th>
+                <th><span class="text-light">Precio</span></th>
+                <th><span class="text-light">Inventario </span></th>
+                <th><span class="text-light">Marca </span></th>
+                <th><span class="text-light">Categoria</span></th>
+                <th><span class="text-light">Proveedor</span></th>
+                <th><span class="text-light">Opciones</span></th>
+                <th><span class="text-light">Publico</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for data in table %}
+                <tr>
+                    <td>
+                        <b>{{ data.product.name}}</b>
+                        <p>{{ data.product.description|slice(0, 100)  }}..</p>
+                    </td>
+                    <td>{{ data.product.key_unit }}</td>
+                    <td>{{ data.product.price|number_format(2, '.', ',') }}</td>
+                    <td>{{ data.product.inventary }}</td>
+                    <td>{{ data.mark.name }}</td>
+                    <td>{{ data.category.name }}</td>
+                    <td>{{ data.provider.name }}</td>
+                    <td> {% if (data.product.is_public == 1) %} <span class="label label-success">Activo</span> {% else %} <span class="label label-default">Inactivo</span> {% endif %} </td>
+                    <td>
+
+                        <a href="{{ base }}admin/product/edit/{{ data.product.id_product }}" class="btn btn-primary btn-xs"><i class="icon-pencil"></i></a>
+                        <form class="formNormal" id="{{ base }}admin/product/delete" action="#" method="post">
+                            <input type="hidden" name="id_product" value="{{ data.product.id_product }}" >
+                            <button type="submit" class="btn btn-danger btn-xs"><i class="icon-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- /basic datatable -->
+
+    </div>
+
+
+
+
+
+{% endblock %}

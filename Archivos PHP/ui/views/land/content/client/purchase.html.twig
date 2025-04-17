@@ -1,0 +1,144 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} Perfil de usuario {% endblock %}
+{% block contenido %}
+
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        <!-- Page Title-->
+        <div class="page-title">
+            <div class="container">
+                <div class="column">
+                    <h1>Nº DE ORDEN  {{ pucharse.info.transaction_id }}</h1>
+                </div>
+                <div class="column">
+                    <ul class="breadcrumbs">
+                        <li><a href="{{ base }}">Inicio</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li>{{ pucharse.info.transaction_id }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    {%  if pucharse.info.transaction_id == "" %}
+
+        <div class="alert alert-danger alert-dismissible fade show text-center margin-bottom-1x">
+            <span class="alert-close" data-dismiss="alert"></span><i class="icon-ban"></i>&nbsp;&nbsp;
+            <strong>Error:</strong> No es posible accesar a este pedido.</div>
+    {% else %}
+
+        <!-- Page Content-->
+        <div class="container padding-bottom-3x mb-1">
+            <div class="card mb-3">
+                <div class="p-4 text-center text-white text-lg bg-dark rounded-top"><span class="text-uppercase">Nº de seguimiento - </span><span class="text-medium">{{ pucharse.info.transaction_id }}</span></div>
+                <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
+                    <div class="w-100 text-center py-1 px-2"><span class='text-medium'>Enviado via:</span> {{ pucharse.info.send_by }}</div>
+                    <div class="w-100 text-center py-1 px-2"><span class='text-medium'>Estado de pago:</span> {{ pucharse.info.payment_status }}</div>
+                    <div class="w-100 text-center py-1 px-2"><span class='text-medium'>Fecha de compra:</span> {{ pucharse.info.date_re }}</div>
+                </div>
+                <div class="card-body">
+                    <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+                        <div class="step {% if pucharse.info.status >= 1  %} completed {% endif %}">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                            </div>
+                            <h4 class="step-title">Orden confirmada</h4>
+                        </div>
+                        <div class="step {% if pucharse.info.status >= 2  %} completed {% endif %}">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="pe-7s-config"></i></div>
+                            </div>
+                            <h4 class="step-title">Orden de procesamiento</h4>
+                        </div>
+                        <div class="step {% if pucharse.info.status >= 3  %} completed {% endif %}">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="pe-7s-medal"></i></div>
+                            </div>
+                            <h4 class="step-title">Control de calidad</h4>
+                        </div>
+                        <div class="step {% if pucharse.info.status >= 4  %} completed {% endif %}">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="pe-7s-car"></i></div>
+                            </div>
+                            <h4 class="step-title">Producto despachado</h4>
+                        </div>
+                        <div class="step {% if pucharse.info.status >= 5  %} completed {% endif %}">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="pe-7s-home"></i></div>
+                            </div>
+                            <h4 class="step-title">Producto entregado</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between align-items-center">
+                <div class="w-100 text-center text-sm-left">
+                    <a class="btn btn-outline-primary" href="{{ base }}client/purchases">Volver</a>
+                </div>
+
+                <div class="w-100 text-center text-sm-right">
+                    <button class="btn btn-outline-primary"   type="button" data-toggle="modal" data-target="#orderDetaills">Ver detalles</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </div>
+
+
+        <!-- Large Modal-->
+        <div class="modal fade" id="orderDetaills" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Order No  - {{ pucharse.info.transaction_id }}</h4>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive shopping-cart">
+                            <table class="table">
+                                <thead>
+                                <tr class="thead-default">
+                                    <th>Producto</th>
+                                    <th class="text-center">Subtotal</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for data in pucharse.products %}
+                                    <tr>
+                                        <td>
+                                            <div class="product-item">
+                                                <div class="product-info">
+                                                    <h4 class="product-title"><a href="shop-single.html">{{ data.name }}<small>x 1</small></a></h4>
+                                                    <span><em>Precio:</em> {{ data.price }}</span>
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center text-lg text-medium">$ {{ data.subtotal }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="mb-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center pb-2">
+                            <div class="px-2 py-1">Subtotal: <span class='text-medium'>$ {{ pucharse.info.itemamt }}</span></div>
+                            <div class="px-2 py-1">Envio: <span class='text-medium'>$ 10 </span></div>
+                            <div class="px-2 py-1">Impuesto: <span class='text-medium'>$ {{ pucharse.info.taxatm }}</span></div>
+                            <div class="text-lg px-2 py-1">Total: <span class='text-medium'>$ {{ pucharse.info.atm }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endif %}
+
+{% endblock %}

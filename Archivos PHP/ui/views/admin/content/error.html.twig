@@ -1,0 +1,16 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+  <br><br><br>
+    <div align="center">
+    <div class="cls-content">
+        <h1 class="error-code text-mint">{{ code }}</h1>
+        <p class="h4 text-uppercase">{{  status }}!</p>
+        <div class="pad-btm">
+            {{ text }}
+        </div>
+        <hr class="new-section-sm bord-no">
+        <div class="pad-top"><a class="btn btn-default" href="{{ base }}/admin">Volver al inicio</a></div>
+    </div>
+    </div>
+{% endblock %}

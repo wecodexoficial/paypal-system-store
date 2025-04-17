@@ -1,0 +1,103 @@
+<header class="navbar navbar-sticky">
+    <!-- Search-->
+    <form class="site-search" method="get" action="{{ base }}q">
+        <input type="text" name="product" placeholder="Buscar algo...">
+        <div class="search-tools"><span class="clear-search">Clear</span><span class="close-search"><i class="icon-cross"></i></span></div>
+    </form>
+    <div class="site-branding">
+        <div class="inner">
+            <a class="site-logo" href="{{ base }}"><img src="{{ base }}{{ ws_info.ws_logo }}" alt="{{ ws_info.ws_name }}"></a>
+        </div>
+    </div>
+    <!-- Main Navigation-->
+    <nav class="site-menu">
+        <ul>
+            <li class="has-megamenu active"><a href="{{ base }}"><span>Inicio</span></a></li>
+            <li><a href="#"><span>Categorias</span></a>
+                <ul class="sub-menu">
+                    {% for data in hd_categories %}
+                    <li><a href="{{ base }}q?category={{ data.short_name }}"><i class="fa fa-star"></i>{{ data.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+            <li><a href="#"><span>Marcas</span></a>
+                    <ul class="sub-menu">
+                        {% for data_mark in hd_mark %}
+                            <li><a href="{{ base }}q?mark={{ data_mark.short_name }}">{{ data_mark.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+            </li>
+
+        </ul>
+    </nav>
+    <!-- Toolbar-->
+    <div class="toolbar">
+        <div class="inner">
+            <div class="tools">
+                <div class="search"><i class="icon-search"></i></div>
+                <div class="account"><a href="#"></a><i class="icon-head"></i>
+                    <ul class="toolbar-dropdown">
+                        {% if session_data_user != "" %}
+
+                        <li class="sub-menu-user">
+
+                            <div class="user-info">
+                                <h6 class="user-name">{{ session_data_user.name }} {{ session_data_user.lastname }}</h6>
+                                <span class="text-xs text-muted">{{ session_data_user.last_access }}</span>
+                            </div>
+                        </li>
+                            <li class="sub-menu-separator"></li>
+                        <li><a href="{{ base }}client/profile">Mi perfil</a></li>
+                        <li><a href="{{ base }}shopping">Mi carrito</a></li>
+                        <li><a href="{{ base }}client/purchases">Mis compras</a></li>
+
+                        <li class="sub-menu-separator"></li>
+                        <li><a href="/signout"> <i class="icon-unlock"></i>Salir</a></li>
+                        {% else %}
+
+                            <li><a href="{{ base }}login"> <i class="icon-unlock"></i>Iniciar sesion</a></li>
+                            <li><a href="{{ base }}register"> <i class="icon-lock"></i>Registrate</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% set i=0 %}
+                {% set total = 0 %}
+                {% for data in ft_shopping %}
+                    {% set i = i + 1 %}
+                    {% set total = total + data.subtotal %}
+                {% endfor %}
+                <div class="cart"><a href="cart.html"></a><i class="icon-bag"></i><span class="count">{{ i }}</span><span class="subtotal">${{ total|number_format(2, '.', ',')  }}</span>
+                    <div class="toolbar-dropdown">
+
+                        {% set i=0 %}
+                        {% set total = 0 %}
+                        {% for data in ft_shopping %}
+
+                        <div class="dropdown-product-item">
+                            <form class="formNormal" id="{{ base }}shopping/del" action="#" method="post">
+                                <input type="hidden" name="id_product" value="{{ i }}">
+                                <button class="remove-from-cart none"  style="border:none; background-color: white;" data-toggle="tooltip" title="Remove item"><span class="dropdown-product-remove"><i class="icon-cross"></i></span></button>
+                            </form>
+                            <div class="dropdown-product-info"><a class="dropdown-product-title" href="{{ base }}shopping">{{ data.product.name }}</a><span class="dropdown-product-details">{{ data.quantity }} x ${{ data.subtotal|number_format(2, '.', ',') }}</span></div>
+                        </div>
+                            {% set i = i + 1 %}
+                            {% set total = total + data.subtotal %}
+                        {% endfor %}
+
+
+
+                        <div class="toolbar-dropdown-group">
+                            <div class="column"><span class="text-lg">Total:</span></div>
+                            <div class="column text-right"><span class="text-lg text-medium">${{ total|number_format(2, '.', ',') }}&nbsp;</span></div>
+                        </div>
+                        <div class="toolbar-dropdown-group">
+                            <div class="column"><a   class="btn btn-sm btn-block btn-secondary" href="{{ base }}shopping">Ver carrito</a></div>
+                            <div class="column"><a class="btn btn-sm btn-block btn-success" href="{{ base }}">Finalizar</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

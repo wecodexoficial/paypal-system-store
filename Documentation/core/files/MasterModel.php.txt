@@ -1,0 +1,165 @@
+<?php
+
+/**
+ * MasterModel.php
+ * Created By: Josué Saúl Martínez
+ * Date: 27/04/2017
+ * Time: 23:00
+ */
+
+class MasterModel extends DB\SQL\Mapper
+{
+
+    protected $table;
+
+    public function __construct(DB\SQL $db, $table=null)
+    {
+        parent::__construct($db, $table);
+        $this->table = $table;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function all($limit = null, $order = null, $offset = null, $group = null)
+    {
+        /** @var  $option */
+        $option = array(
+            'order' => $order,
+            'group' => $group,
+            'limit' => $limit,
+            'offset' => $offset
+        );
+        /** @var  $result */
+        $result = null;
+        $objt = $this->find(null, $option);
+        foreach ($objt as $list) {
+            $result[] = $list->cast();
+        }
+        return $result;
+    }
+
+    /**
+     * @param $field
+     * @param $value
+     * @return array|null
+     */
+
+    public function getField($field, $value = null, $limit = null, $order = null, $offset = null, $group = null)
+    {
+        /** @var $option */
+
+        $option = array(
+            'order' => $order,
+            'group' => $group,
+            'limit' => $limit,
+            'offset' => $offset
+        );
+
+        /** @var  $result */
+
+        $result = null;
+        $objt = $this->find(array('' . $field . '="' . $value . '"'), $option);
+        foreach ($objt as $list) {
+            $result[] = $list->cast();
+        }
+        return $result;
+    }
+
+
+    /**
+     * @param $post
+     * @return mixed
+     */
+
+    public function add($post,$last=null)
+    {
+        $this->copyfrom($post);
+        $this->insert();
+        if(!$last){
+                return $this->last()->_id;
+            }else{
+                return $this->last()->$last;
+        }
+    }
+
+    /**
+     * @param $data
+     * @return \DB\SQL\scalar
+     */
+    public function addAll($data,$last=null)
+    {
+
+            foreach ($data as $row) {
+                    $this->copyfrom($row);
+                    $this->insert();
+                    $this->next();
+            }
+            if(!$last){
+                return $this->last()->_id;
+            }else{
+                return $this->last()->$last;
+            }
+    }
+
+    public function lastInsertValue($last=null){
+        if(!$last){
+            return $this->last()->_id;
+        }else{
+            return $this->last()->$last;
+        }
+
+    }
+
+
+
+    /**
+     * @param $id_field
+     * @param $value
+     * @param $data
+     * @return object
+     */
+    public function edit($id_field, $value, $data)
+    {
+        $this->load(array('' . $id_field . '=?', $value));
+        $this->copyfrom($data);
+        return $this->update();
+    }
+
+    /**
+     * @param $id_field
+     * @param $value
+     *
+     */
+    public function delete($id_field, $value)
+    {
+        $this->load(array('' . $id_field . '=?', $value));
+        $this->erase();
+    }
+
+    /**
+     * @param $field
+     * @param $value
+     * @return bool
+     */
+
+    public function existValue($field, $value)
+    {
+        if (!empty ($this->find(array('' . $field . '="' . $value . '"')))) {
+            return true;
+        } else {
+
+        }
+        return false;
+    }
+
+    /**
+     * @param $query
+     * @return array|FALSE|int
+     */
+    public function customQuery($query)
+    {
+        return $this->db->exec($query);
+    }
+
+}

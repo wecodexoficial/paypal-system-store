@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 06/10/2017
+ * Time: 0:11
+ */
+
+namespace Sap;
+class SapQueryController extends \MasterController
+{
+
+    public $sap;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->sap = new \SapRFC(array(
+                "logindata" => array(
+                    "ASHOST" => "saplocal",
+                    "SYSNR" => "00",
+                    "CLIENT" => "800",
+                    "PASSWD" => "akgv2205"),
+                "show_errors" => true,
+                "debug" => false)
+        );
+
+    }
+
+    public  function qFindOrder($provider, $company, $number_order, $number_delivery = null, $indirecto = "X", $table)
+    {
+
+        $result = $this->sap->callFunction("ZMXMM_PP_PED_ENT",
+            array(
+                array("IMPORT", "I_LIFNR", $provider),
+                array("IMPORT", "I_BUKRS", $company),
+                array("IMPORT", "I_EBELN", $number_order),
+                array("IMPORT", "I_XBLNR", $number_delivery),
+                array("IMPORT", "I_INDIRECTO", $indirecto),
+                array("IMPORT", "I_IDIOMA", "S"),
+                array("TABLE", $table, array())
+            ));
+
+        return $result;
+    }
+
+
+}

@@ -1,0 +1,69 @@
+<!-- Main navbar -->
+<div class="navbar navbar-default header-highlight">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="{{ base }}admin">
+            <img src="{{ base }}{{ ws_info.ws_logo }}"  width="80px" alt=""></a>
+
+        <ul class="nav navbar-nav visible-xs-block">
+            <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+            <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+        </ul>
+    </div>
+
+    <div class="navbar-collapse collapse" id="navbar-mobile">
+        <ul class="nav navbar-nav navbar-left">
+        <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a></li>
+        </ul>
+        <p class="navbar-text"><span class="label bg-success">{{ translate.online }}</span></p>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="lang-selector dropdown language-switch">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="{{ base }}ui/templates/limitles/images/flags/gb.png" class="position-left" alt="">
+                    <span class="lang-selected">
+                       {% if language_selector=='es' %}
+                           <img class="lang-flag" src="{{ base }}ui/assets/templates/limitles/images/flags/es.png" alt="Spain">
+                       {% endif %}
+                        {% if language_selector=='en' %}
+                            <img class="lang-flag" src="{{ base }}ui/assets/templates/limitles/images/flags/gb.png" alt="English">
+                        {% endif %}
+                    </span>
+                </a>
+                <ul class="dropdown-menu">
+                    {% if language_selector!='en' %}
+                        <li>
+                            <!--English-->
+                            <a href="#" class="language_selector" id="en">
+                                <img class="lang-flag" src="{{ base }}ui/assets/templates/limitles/images/flags/gb.png">
+
+                                <span class="lang-name">{{ translate.english|capitalize }}</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if language_selector!='es' %}
+                    <li>
+                        <a href="#" class="language_selector" id="es">
+                            <img class="lang-flag" src="{{ base }}ui/assets/templates/limitles/images/flags/es.png" >
+                            <span class="lang-name">{{ translate.spanish|capitalize }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                  </ul>
+            </li>
+
+            <li class="dropdown dropdown-user">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="assets/images/placeholder.jpg" alt="">
+                    <span>{{ (session_data_user.name) }}</span>
+                    <i class="caret"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="{{ base }}admin/config/profile"><i class="icon-user"></i> Mi perfil</a></li>
+                    <li><a href="{{ base }}signout"><i class="icon-switch2"></i> Salir</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- /main navbar -->

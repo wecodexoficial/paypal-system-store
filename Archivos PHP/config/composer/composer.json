@@ -1,0 +1,29 @@
+{
+  "config": {
+    "vendor-dir": "../../vendor"
+  },
+  "name": "f3-kilo/arquitectura",
+  "authors": [
+    {
+      "name": "Wecodex Solutions"
+    }
+  ],
+  "require-dev": {
+    "phpdocumentor/phpdocumentor": "2.*"
+  },
+  "require":{
+    "bcosca/fatfree": "3.6.1",
+    "twig/twig": "v1.34.4",
+    "filp/whoops": "^2.1",
+    "vlucas/valitron": "^1.4",
+    "phpoffice/phpexcel": "^1.8",
+    "twig/extensions": "^1.5",
+    "snilius/twig-sort-by-field": "^0.1.5",
+    "sendgrid/sendgrid": "~6.0",
+    "jms/serializer": "^1.9",
+    "graphp/graphviz": "~0.2.0",
+    "phpmailer/phpmailer": "~6.0"
+  }
+
+}
+

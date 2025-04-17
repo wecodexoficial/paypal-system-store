@@ -1,0 +1,94 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.categories|capitalize }}</span> - {{ translate.add|capitalize }}  {{ translate.category }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/category" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-list"></i></b> {{ translate.list|capitalize }} {{ translate.of }} {{ translate.categories }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+    <!-- Basic datatable -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">{{ translate.new_register }}</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <form class="formNormal " id="{{ base }}admin/category/save" action="#" method="post">
+                <div class="col-md-6">
+                    <div class="form-group form-group-material">
+                        <label class="control-label">Nombre categoria</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class=" icon-archive"></i></span>
+                            <input type="text" name="name" placeholder="Nombre del categoria" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Short code</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-barcode2"></i></span>
+                                <input type="text" name="short_name" placeholder="Nombre corto de categoria" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+
+                            <div class="col-md-12">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Descripcion de categoria</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class=" icon-paragraph-justify2"></i></span>
+                                        <textarea name="description" placeholder="Descripcion corta de la categoria" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        <div class="text-right">
+                            <button type="reset" class="btn btn-default" id="reset">Limpiar <i
+                                        class="icon-reload-alt position-right"></i></button>
+                            <button type="submit" class="btn btn-primary">Añadir <i
+                                        class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                        </form>
+
+                    </div>
+                </div>
+    </div>
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

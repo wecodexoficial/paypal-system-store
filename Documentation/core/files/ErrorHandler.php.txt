@@ -1,0 +1,13 @@
+<?php
+
+class ErrorHandler extends MasterController
+{
+    public static function error()
+    {
+
+            ErrorController::$mode = Base::instance()->get('ERROR_MODE');
+            ErrorController::$ajax =Base::instance()->ajax();
+            Base::instance()->set('ONERROR', 'ErrorController::Error');
+
+    }
+}

@@ -1,0 +1,77 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.sliders|capitalize }}</span> - {{ translate.list|capitalize }} {{ translate.of }} {{ translate.sliders }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/slider/add" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-add"></i></b> {{ translate.add|capitalize }} {{ translate.slider }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+    <!-- Basic datatable -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">{{ translate.table_registers }}</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="table  datatable-basic  table-striped table-hover">
+            <thead>
+            <tr class="bg-slate-800">
+                <th width="30%">Imagen</th>
+                <th width="40%"><span class="text-light">Titulo</span></th>
+                <th width="15%"><span class="text-light">Opciones</span></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for data in table %}
+                <tr>
+                    <td>
+                        <img src="{{ base }}{{ data.image }}" width="250px">
+                    </td>
+                    <td>
+                        <b>{{ data.title}}</b>
+                        <p>{{ data.description|slice(0, 200)  }}..</p>
+                    </td>
+                     <td>
+                        <a href="{{ base }}admin/slider/edit/{{ data.id_slider }}" class="btn btn-primary btn-xs"><i class="icon-pencil"></i></a>
+                        <form class="formNormal" id="{{ base }}admin/slider/delete" action="#" method="post">
+                            <input type="hidden" name="id_slider" value="{{ data.id_slider }}" >
+                            <button type="submit" class="btn btn-danger btn-xs"><i class="icon-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- /basic datatable -->
+
+    </div>
+
+
+
+
+
+{% endblock %}

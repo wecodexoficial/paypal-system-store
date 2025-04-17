@@ -1,0 +1,26 @@
+<script src="{{ base }}ui/assets/general/js/peticiones/baseComponente.js"></script>
+<script>
+    $(function(){
+        baseComponente.inicializarAjax("/");
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $(".switchios").iosCheckbox();
+    });
+
+    $(function() {
+
+        // Initialize lightbox
+        $('[data-popup="lightbox"]').fancybox({
+            padding: 3
+        });
+
+    });
+</script>
+
+
+<script src="{{ base }}ui/assets/general/js/peticiones/petitions.js"></script>
+<script src="{{ base }}ui/assets/general/js/peticiones/login.js"></script>
+<script src="{{ base }}ui/assets/general/js/peticiones/global.js"></script>
+<script src="{{ base }}ui/assets/general/js/peticiones/global_html.js"></script>

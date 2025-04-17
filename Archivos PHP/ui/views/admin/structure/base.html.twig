@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+        {% include 'admin/structure/head.html.twig' %}
+        <title>{% block title %}{% endblock %} - Panel Administraci&oacute;n</title>
+    {% endblock %}
+    {% block estilos %}
+        {% include 'admin/structure/styles.html.twig' %}
+    {% endblock %}
+</head>
+<body>
+
+{% include 'admin/structure/navbar.html.twig' %}
+<!-- Page container -->
+<div class="page-container">
+    <!-- Page content -->
+    <div class="page-content">
+        {% include 'admin/structure/menu.html.twig' %}
+        {% block contenido %}{% endblock %}
+    </div>
+</div>
+
+<!-- contenido de pagina-->
+{% block scripts %}
+    {% include 'admin/structure/scripts.html.twig' %}
+{% endblock %}
+
+</body>
+</html>

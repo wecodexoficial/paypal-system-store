@@ -1,0 +1,27 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 23/10/2017
+ * Time: 13:53
+ */
+
+namespace Sap;
+
+class SapController extends SapQueryController
+{
+
+    public function findOrder(){
+        $params = self::httpParam("data_order");
+        self::qFindOrder(
+            $params["provider"],
+            $params["company"],
+            $params["number_order"],
+            $params["delivery"],
+            $params["indirecto"],
+            "T_DETPED");
+
+    }
+
+
+}

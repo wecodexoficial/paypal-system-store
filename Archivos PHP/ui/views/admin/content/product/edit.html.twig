@@ -1,0 +1,259 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.products|capitalize }}</span> - {{ translate.edit|capitalize }}  {{ translate.product }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/product" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-list"></i></b> {{ translate.list|capitalize }} {{ translate.of }} {{ translate.products }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+        <!-- Basic datatable -->
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">{{ translate.new_register }}</h5>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+
+                <legend class="text-bold"> Imagenes</legend>
+                <div class="row">
+                {% for image in data.images %}
+
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="thumbnail">
+                            <div class="thumb">
+                                <img src="{{ base }}{{ image.rute }}" alt="">
+                                <div class="caption-overflow">
+										<span>
+											<a href="{{ base }}{{ image.rute }}" data-popup="lightbox" rel="gallery" class="btn border-white text-white btn-flat btn-icon btn-rounded"><i class="icon-plus3"></i></a>
+										</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+                </div>
+
+
+
+                <legend class="text-bold"> Informacion</legend>
+
+                <form class="formNormal " id="/admin/product/update" action="#" method="post">
+
+                <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Nombre de producto</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-basket"></i></span>
+                                    <input type="text" name="data[name]" value="{{ data.product.name }}" placeholder="Nombre del producto" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Numero SKU</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-barcode2"></i></span>
+                                    <input type="text" name="data[sku]" value="{{ data.product.sku }}" placeholder="Numero sku del producto" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Categoria</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-puzzle"></i></span>
+                                    <select class="form-control" name="data[id_category]" required>
+                                        <option value="">Selecciona una opcion</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.id_category }}" {% if data.product.id_category == category.id_category  %} selected {% endif %}>{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Proveedor</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-user-check"></i></span>
+                                    <select class="form-control" name="data[id_provider]" required>
+                                        <option value="">Selecciona una opcion</option>
+                                        {% for provider in providers %}
+                                            <option value="{{ provider.id_provider }}"  {% if data.product.id_provider == provider.id_provider  %} selected {% endif %}>{{ provider.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Descripcion de producto</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-paragraph-justify2"></i></span>
+                                    <textarea name="data[description]" placeholder="Descripcion corta del producto" class="form-control">{{ data.product.description }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Venda de producto</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-puzzle"></i></span>
+                                    <select class="form-control" name="data[key_unit]" required>
+                                        <option value="">Selecciona una opcion</option>
+                                        <option value="Pieza" {% if  data.product.key_unit == "Pieza"  %} selected {% endif %}>Pieza</option>
+                                        <option value="Juego" {% if  data.product.key_unit == "Juego"  %} selected {% endif %}>Juego</option>
+                                        <option value="Kit" {% if  data.product.key_unit == "Kit"  %} selected {% endif %}>Kit</option>
+                                        <option value="Kilogramo" {% if  data.product.key_unit == "Kilogramo"  %} selected {% endif %}>Kilometro</option>
+                                        <option value="Litro" {% if  data.product.key_unit == "Litro"  %} selected {% endif %}>Litro</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Precio por unidad</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                                    <input type="number" step="any" name="data[price]" value="{{ data.product.price }}" placeholder="Precio de producto"
+                                           class="form-control" required minlength="1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Promocion (% descuento)</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                                    <input type="number" step="any" name="data[porcent_discount]" value="{{ data.product.porcent_discount }}" placeholder="Ingresa un procentage de descuento" class="form-control"  minlength="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label class="control-label">Imagenes</label>
+                            <input type="file" name="images[]" class="file-input" multiple="multiple">
+                            <br><br>
+                        </div>
+
+
+                        <div class="col-sm-4">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Marca</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-star-full2"></i></span>
+                                    <select name="data[id_mark]" class="form-control">
+                                        {% for mark in marks %}
+                                            <option value="{{ mark.id_mark }}" {% if data.product.id_mark == mark.id_mark %} selected {% endif %}>{{ mark.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="col-sm-2">
+                                <label class="control-label">Es publico</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="data[is_public]" value="1" {% if data.product.is_public == 1 %} checked="checked" {% endif %} class="switchios">
+
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="control-label">Top producto</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="data[is_top]" value="1"  {% if data.product.is_top == 1 %} checked="checked" {% endif %} class="switchios">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="control-label">Conservar imagenes (cargadas)</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="delete_images" value="1" checked class="switchios">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12">
+                            <legend class="text-bold">Inventario</legend>
+                        </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Cantidad en inventario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa "></i></span>
+                                        <input type="text" name="inv[inventary]" value="{{ data.product.inventary }}"  placeholder="Cantidad inicial" class="form-control" minlength="1" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6" >
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Añadir inventario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa "></i></span>
+                                        <input type="text" name="inv[quantity]"  placeholder="Ingresa una cantidad a agregar" class="form-control" minlength="1" >
+                                    </div>
+                                </div>
+                            </div>
+
+
+                </div>
+                    <input type="hidden" name="data[code]" value="{{ data.product.code }}">
+                    <input type="hidden" name="data[id_product]" value="{{ data.product.id_product }}">
+                    <div class="text-right">
+                        <button type="reset" class="btn btn-default" id="reset">Limpiar <i
+                                    class="icon-reload-alt position-right"></i></button>
+                        <button type="submit" class="btn btn-primary">Guardar <i
+                                    class="icon-arrow-right14 position-right"></i></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "land/structure/base.html.twig" %}
+
+{% block contenido %}
+
+
+
+
+<!-- Off-Canvas Wrapper-->
+<div class="offcanvas-wrapper">
+    <!-- Page Content-->
+    <div class="container padding-top-3x padding-bottom-3x mb-1"><img class="d-block m-auto" src="{{ base }}ui/assets/templates/commer/img/404_art.jpg" style="width: 100%; max-width: 550px;" alt="404">
+        <div class="padding-top-1x mt-2 text-center">
+            <h3>{{ code }}</h3>
+            <p>{{ status }} <br><a href="{{ base }}">Volver al inicio</a><br>{{ text }}</p>
+        </div>
+    </div>
+
+
+{% endblock %}

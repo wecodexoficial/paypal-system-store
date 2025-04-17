@@ -1,0 +1,69 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 10/09/2017
+ * Time: 1:26
+ */
+
+namespace Admin;
+
+
+use Sat\XMLArrayController;
+use Sat\ValidatorController;
+
+class MiroController extends \MasterController
+{
+    public $arr_generate;
+    public $validate;
+    public $file;
+    public $notification;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->arr_generate = new XMLArrayController();
+        $this->file = new \UploadFile();
+        $this->notification = new NotificationController();
+
+    }
+
+
+
+    public function upload()
+    {
+        // Recibe la informacion del formulario
+        $data = self::httpFile('data_file');
+        $source = $this->file->upload($data, array('xml'), 4, "documents/test");
+        if (!$source["status"]) {
+            \Responses::message($source["message"], "ERROR");
+        }else{
+            $data = $this->arr_generate->generateArrayXML($source['path']);
+            $this->validate = new ValidatorController($data["data"]);
+            $this->validate->valida_xsd();
+            $this->validate->validaSello();
+            $this->validate->validaSelloTFD();
+            $this->validate->validaSat();
+            $request = $this->validate->request();
+           unset($data["data"]["xml"]);
+
+
+            $data_response = array("data_xml" => $data, "data_validate" => $request,"data_autorizer" => UserController::getAutorizersData());
+            if($request->status) {
+           //     $this->notification->saveNotification("Factura validada",null,1,0,"admin",null,"/admin/config/users");
+                \Responses::message($data_response , "CORRECTO");
+            }else{
+                \Responses::message($request->message, "ERROR");
+                $this->file->delete($data, "documents/test"); // Elimina la factura
+            }
+        }
+    }
+
+    public static function sendAutorizer(){
+        $data = self::httpFile('data');
+            var_dump($data);
+
+    }
+
+
+}

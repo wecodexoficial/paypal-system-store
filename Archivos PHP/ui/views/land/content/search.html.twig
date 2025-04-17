@@ -1,0 +1,121 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} Busqueda {{ data.search }} {% endblock %}
+{% block contenido %}
+
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        <!-- Page Title-->
+        <div class="page-title">
+            <div class="container">
+                <div class="column">
+                    <h1>Busqueda: {{ data.search }} </h1>
+                </div>
+                <div class="column">
+                    <ul class="breadcrumbs">
+                        <li><a href="{{ base }}">Inicio</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li>{{ data.search }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Page Content-->
+        <div class="container padding-bottom-3x mb-1">
+            <div class="row">
+                <!-- Products-->
+                <div class="col-xl-9 col-lg-8 order-lg-2">
+                    <!-- Shop Toolbar-->
+                    <div class="shop-toolbar padding-bottom-1x mb-2">
+
+                    </div>
+                    {% if data.response == "" %}
+                        <div class="alert alert-warning alert-dismissible fade show text-center margin-bottom-1x"><span class="alert-close" data-dismiss="alert"></span><i class="icon-bell"></i>&nbsp;&nbsp;No se ha encontrado ningun resultado de busqueda</div>
+                        {% else %}
+                    <!-- Product-->
+                    {% for product in data.response %}
+                    <div class="product-card product-list">
+                        <a class="product-thumb" href="{{ base }}product/view/{{ product.product.id_product }}">
+                            <div class="product-badge text-danger">{{ product.product.porcent_discount }}% Off</div>
+                            <img src="{{ base }}{{ product.images[0].rute }}" alt="Product"></a>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="{{ base }}product/view/{{ product.product.id_product }}">{{ product.product.name }}</a></h3>
+                            <h4 class="product-price">
+                                    {% if product.product.porcent_discount != 0 %}
+                                <h4 class="text-success">
+                                    ${{ ( product.product.price - (product.product.price * product.product.porcent_discount / 100 ))|number_format(2, '.', ',') }}
+                                    <del>
+                                        <small> | ${{ product.product.price|number_format(2, '.', ',') }}</small>
+                                    </del>
+                                </h4>
+                                <h5>
+                                    <small> %{{ product.product.porcent_discount }} de descuento</small>
+                                </h5>
+                                {% else %}
+                                    <h5> ${{ product.product.price|number_format(2, '.', ',') }}</h5>
+                                    <br>
+                                {% endif %}
+                            </h4>
+                            <p class="hidden-xs-down">{{ product.product.description|slice(0, 200)  }}</p>
+                            <div class="product-buttons row">
+
+                                <div class="col-md-6"> <a href="{{ base }}product/view/{{ product.product.id_product }}" class="btn btn-outline-primary btn-sm">Ver producto</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <form class="formNormal" id="{{ base }}shopping/add" action="#" method="post">
+                                    <input type="hidden" name="product[id_product]"
+                                           value="{{ product.product.id_product }}">
+                                    <input type="hidden" name="product[q]" value="1">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Comprar</button>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   {% endfor %}
+                            {% endif %}
+
+
+
+
+                </div>
+                <!-- Sidebar          -->
+                <div class="col-xl-3 col-lg-4 order-lg-1">
+                    <aside class="sidebar">
+                        <div class="padding-top-2x hidden-lg-up"></div>
+                        <!-- Widget Categories-->
+                        <section class="widget widget-categories">
+                            <h3 class="widget-title">Categorias</h3>
+                            <ul>
+                                {% for data in hd_categories %}
+                                    <li class="has-children"><a href="{{ base }}q?category={{ data.short_name }}">{{ data.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </section>
+                        <!-- Widget Categories-->
+                        <section class="widget widget-categories">
+                            <h3 class="widget-title">Marcas</h3>
+                            <ul>
+                                {% for data in hd_mark %}
+                                    <li class="has-children"><a href="{{ base }}q?category={{ data.short_name }}">{{ data.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </section>
+
+                        <!-- Promo Banner-->
+                        <section class="promo-box" style="background-image: url({{ base }}ui/assets/templates/commer/img/banners/02.jpg);">
+                            <!-- Choose between .overlay-dark (#000) or .overlay-light (#fff) with default opacity of 50%. You can overrride default color and opacity values via 'style' attribute.--><span class="overlay-dark" style="opacity: .45;"></span>
+                            <div class="promo-box-content text-center padding-top-3x padding-bottom-2x">
+                                <h4 class="text-light text-thin text-shadow">Alguna publicidad aqui</h4>
+                                <h3 class="text-bold text-light text-shadow">Descripcion de publicidad</h3><a class="btn btn-sm btn-primary" href="#">Boton</a>
+                            </div>
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

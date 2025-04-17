@@ -1,0 +1,158 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} {{ data.product.name }} {% endblock %}
+{% block contenido %}
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        <!-- Page Title-->
+        <div class="page-title">
+            <div class="container">
+                <div class="column">
+                    <h1>{{ data.product.name }}</h1>
+                </div>
+                <div class="column">
+                    <ul class="breadcrumbs">
+                        <li><a href="index-2.html">Inicio</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li><a href="shop-grid-ls.html">Producto</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li>{{ data.product.name}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Page Content-->
+        <div class="container padding-bottom-3x mb-1">
+            <div class="row">
+                <!-- Poduct Gallery-->
+                <div class="col-md-6">
+                    <div class="product-gallery">
+                           {% if data.product.porcent_discount != 0 %}
+                        <span class="product-badge text-danger">%{{ data.product.porcent_discount }} OFF</span>
+                        {% endif %}
+                        <div class="gallery-wrapper">
+                          {% for image in data.images %}
+                            <div class="gallery-item"><a href="{{ base }}{{ image.rute }}" data-hash="one" data-size="1000x667"></a></div>
+                           {% endfor %}
+                        </div>
+                        <div class="product-carousel owl-carousel">
+
+                            {% for image in data.images %}
+                                <div data-hash="one"><img src="{{ base }}{{ image.rute }}" alt="Product"></div>
+                            {% endfor %}
+
+                        </div>
+                        <ul class="product-thumbnails">
+                             {% for image in data.images %}
+                                 <li class="active"><a href="#one"><img src="{{ base }}{{ image.rute }}" alt="Product"></a></li>
+
+                             {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!-- Product Info-->
+                <div class="col-md-6">
+                    <div class="padding-top-2x mt-2 hidden-md-up"></div>
+                    <div class="rating-stars"><i class="icon-star filled"></i><i class="icon-star filled"></i><i class="icon-star filled"></i><i class="icon-star filled"></i><i class="icon-star"></i>
+                    </div><span class="text-muted align-middle">&nbsp;&nbsp;4.2 | 3 customer reviews</span>
+                    <h2 class="padding-top-1x text-normal">{{ data.product.name }}</h2><span class="h2 d-block">
+                        <p class="text-muted">
+                                {% if data.product.porcent_discount != 0 %}
+
+                            <h3 class="text-success">
+                                ${{ ( data.product.price - (data.product.price * data.product.porcent_discount / 100 ))|number_format(2, '.', ',') }}
+                                <del><small> | ${{ data.product.price|number_format(2, '.', ',') }}</small></del>
+                            </h3>
+
+                        {% else %}
+                            <h4> ${{ data.product.price|number_format(2, '.', ',') }}</h4>
+                            <br>
+                        {% endif %}
+                        </p>
+
+                    </span>
+                    <p>{{ data.product.description }}</p>
+                    <form class="formNormal" id="{{ base }}shopping/add" action="#" method="post">
+                        <input type="hidden" name="product[id_product]" value="{{ data.product.id_product }}">
+                    <div class="row margin-top-1x">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="quantity">Cantidad</label>
+                                <select class="form-control"  name="product[q]" id="q">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-1 mb-2"><span class="text-medium">SKU:</span> #{{ data.product.sku }}</div>
+                    <div class="padding-bottom-1x mb-2"><span class="text-medium">Categories:&nbsp;</span> {{ data.category.name }} </div>
+                    <hr class="mb-3">
+                    <div class="d-flex flex-wrap justify-content-between">
+                        <div class="entry-share mt-2 mb-2"><span class="text-muted">Compartir:</span>
+                            <div class="share-links">
+                                <!-- AddToAny BEGIN -->
+                                <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+                                    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+                                    <a class="a2a_button_facebook"></a>
+                                    <a class="a2a_button_twitter"></a>
+                                    <a class="a2a_button_google_plus"></a>
+                                </div>
+                                <script async src="https://static.addtoany.com/menu/page.js"></script>
+                                <!-- AddToAny END -->
+                            </div>
+                         </div>
+                        <div class="sp-buttons mt-2 mb-2">
+                            <a class="btn btn-outline-secondary btn-sm btn-wishlist" data-toggle="tooltip" title="Favoritos"><i class="icon-heart"></i></a>
+                            <button class="btn btn-primary" data-toast data-toast-type="success" data-toast-position="topRight" data-toast-icon="icon-circle-check" data-toast-title="Product" data-toast-message="successfuly added to cart!">
+                                <i class="icon-bag"></i> Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Product Tabs-->
+            <div class="row padding-top-3x mb-3">
+                <div class="col-lg-10 offset-lg-1">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" href="#description" data-toggle="tab" role="tab">Descripcion</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#reviews" data-toggle="tab" role="tab">Comentarios (Facebook)</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                            <p>{{ data.product.description }}</p>
+
+                        </div>
+                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+
+                            <div id="fb-root"></div>
+                            <script>(function(d, s, id) {
+                                    var js, fjs = d.getElementsByTagName(s)[0];
+                                    if (d.getElementById(id)) return;
+                                    js = d.createElement(s); js.id = id;
+                                    js.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.11&appId=533205656805092';
+                                    fjs.parentNode.insertBefore(js, fjs);
+                                }(document, 'script', 'facebook-jssdk'));</script>
+                            <div class="fb-comments" data-href="{{ base }}product/view/{{ data.product.id_product }}" data-numposts="5"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

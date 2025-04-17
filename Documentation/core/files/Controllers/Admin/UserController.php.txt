@@ -1,0 +1,87 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 10/09/2017
+ * Time: 1:26
+ */
+
+namespace Admin;
+
+class UserController extends \MasterController
+{
+    public $arr_generate;
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+
+
+   public static function getAutorizersData(){
+       $data_autorizer = null;
+       $autorizers = Query::qWhere("common_user_rol", "id_rol", "AUTORIZADOR");
+       if ($autorizers) {
+           foreach ($autorizers as $autorizer) {
+               $data_autorizer[] = Query::qUniqueWhere(array('common_user', 'common_user_rol'), 'id_usuario', $autorizer['id_usuario']);
+           }
+       }
+       return $data_autorizer;
+    }
+
+
+    // Funcion para generar los datos de vista //
+    public static function getUsersData()
+    {
+        $users = self::model('common_user')->all();
+        $rols = self::model('common_rol')->all();
+        $data = null;
+        if ($users) {
+            foreach ($users as $user) {
+                $data[] = Query::qUniqueWhere(array('common_user', 'common_user_rol'), 'id_usuario', $user['id_usuario']);
+            }
+        }
+        return array('data' => $data, 'rols' => $rols);
+    }
+
+
+    public static function getNotifications()
+    {
+        $user_auth = self::getSessionInstance("session_user_id");
+        $notf = NotificationController::getNotification($user_auth);
+        self::setSessionInstance("session_user_notification", $notf);
+    }
+
+
+    // Funcion de guardado de informacion //
+    public function save()
+    {
+        $data = self::httpPost('data');
+        $data_rol = self::httpPost('data_rol');
+        $user = Query::qWhere("common_user", "id_usuario", $data["id_usuario"]);
+        if (count($user) <= 0) {
+            $data["id_usuario"] = $data_rol["id_usuario"];        // Se agrega el parametro de usuario
+            self::model("common_user")->add($data);         // Se guardan todos los datos generales
+            self::model("common_user_rol")->add($data_rol); // Se guardan los 2 campos para agregar el permiso
+            \Responses::message("Se ha agregado correctamente al usuario " . $data["id_usuario"], "CORRECTO", false, true);
+        } else {
+            \Responses::message("El usuario " . $data["id_usuario"] . " ya existe\nIntenta con uno nuevo", "ERROR", false, false);
+        }
+    }
+
+    // Funcion para la actualizacion de informacion //
+    function update()
+    {
+
+
+    }
+
+    // Funcion para la eliminacion de informacion //
+    function delete()
+    {
+
+    }
+
+
+}

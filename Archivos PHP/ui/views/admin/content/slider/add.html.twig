@@ -1,0 +1,118 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span
+                            class="text-semibold">{{ translate.sliders|capitalize }}</span>
+                    - {{ translate.add|capitalize }}  {{ translate.slider }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/slider" class="btn btn-success btn-labeled btn-xs"><b><i
+                                    class="icon-list"></i></b> {{ translate.list|capitalize }} {{ translate.of }} {{ translate.sliders }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+        <!-- Basic datatable -->
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">{{ translate.new_register }}</h5>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <form class="formNormal " id="/admin/slider/save" action="#" method="post">
+                        <div class="col-md-12">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Titulo de slider</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-star-full2"></i></span>
+                                    <input type="text" name="title"
+                                           placeholder="Ingresa un titulo de 20 caracteres maximo" maxlength="30"
+                                           class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Descripcion de categoria</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-paragraph-justify2"></i></span>
+                                    <textarea name="description" placeholder="Descripcion corta de slidershow"
+                                              maxlength="100" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Link redirecion</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" icon-star-full2"></i></span>
+                                    <input type="text" name="link" placeholder="Ingresa un link" class="form-control"  required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label class="control-label">Imagen</label>
+                            <input type="file" name="image" class="file-input">
+                            <br><br>
+                        </div>
+
+                        <div class="col-sm-12 ">
+
+                            <div class="col-sm-3">
+                                <label class="control-label">Es publico</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="is_public" value="1"  class="switchios">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="text-right">
+                            <button type="reset" class="btn btn-default" id="reset">Limpiar <i
+                                        class="icon-reload-alt position-right"></i></button>
+                            <button type="submit" class="btn btn-primary">Añadir <i
+                                        class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

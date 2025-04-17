@@ -1,0 +1,114 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} Perfil de usuario {% endblock %}
+{% block contenido %}
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        <!-- Page Title-->
+        <div class="page-title">
+            <div class="container">
+                <div class="column">
+                    <h1>Mi perfil</h1>
+                </div>
+                <div class="column">
+                    <ul class="breadcrumbs">
+                        <li><a href="{{ base }}">Inicio</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li>Cuenta</li>
+                        <li class="separator">&nbsp;</li>
+                        <li>Mi perfil</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content-->
+        <div class="container padding-bottom-3x mb-2">
+            <div class="row">
+                <div class="col-lg-4">
+                    <aside class="user-info-wrapper" style="padding-top: 0px;">
+                        <div class="user-info">
+
+                            <div class="user-data">
+                                Bienvenido
+                                <h4>{{ session_data_user.name }} {{ session_data_user.lastname  }}</h4>
+                                <span>{{ session_data_user.last_access }}</span>
+                            </div>
+                        </div>
+                    </aside>
+                    <nav class="list-group">
+                       <a class="list-group-item active" href="{{ base }}client/profile"><i class="icon-head"></i>Mi Perfil</a>
+                        <a class="list-group-item" href="{{ base }}client/purchases"><i class="icon-shopping-cart"></i>Mis compras</a>
+                        <a class="list-group-item with-badge" href="{{ base }}shopping"><i class="icon-shopping-cart"></i>Mi carrito</a>
+                     </nav>
+                </div>
+                <div class="col-lg-8">
+                    <div class="padding-top-2x mt-2 hidden-lg-up"></div>
+                    <form class="formNormal row" id="/client/register/update " action="#" method="post">
+
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-fn">Nombre</label>
+                                <input class="form-control" name="data[name]" value="{{ session_data_user.name }}" type="text" id="account-fn" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-ln">Apellidos</label>
+                                <input class="form-control" name="data[lastname]" value="{{ session_data_user.lastname }}" type="text" id="account-ln"  required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-email">Nombre de usuario</label>
+                                <input class="form-control" value="{{ session_data_user.id_user }}" id="account-email"  disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-email">Correo electronico</label>
+                                <input class="form-control"value="{{ session_data_user.email }}" id="account-email"  disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="account-phone">Numero de telefono</label>
+                                <input class="form-control" name="data[phone]" type="text" id="account-phone" value="{{ session_data_user.phone }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="account-phone">Direcccion</label>
+                                <input class="form-control" name="data[address]" type="text" id="account-phone" value="{{ session_data_user.address }}" required>
+                            </div>
+                        </div>
+
+                        <br>
+                        <hr>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-pass">Nueva contraseña</label>
+                                <input class="form-control" name="data[password]" type="password" id="account-pass">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-confirm-pass">Confirma la contraseña</label>
+                                <input class="form-control" type="password" id="account-confirm-pass">
+                            </div>
+                        </div>
+                        <input type="hidden" name="data[id_user]" value="{{ session_data_user.id_user }}">
+                        <div class="col-12">
+                            <hr class="mt-2 mb-3">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+
+                                <button class="btn btn-primary margin-right-none" type="submit" >Actualizar perfil</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.products|capitalize }}</span> - {{ translate.add|capitalize }}  {{ translate.product }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/product" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-list"></i></b> {{ translate.list|capitalize }} {{ translate.of }} {{ translate.products }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+    <!-- Basic datatable -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">{{ translate.new_register }}</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <form class="formNormal " id="/admin/product/save" action="#" method="post">
+                <div class="col-md-3">
+                    <div class="form-group form-group-material">
+                        <label class="control-label">Nombre de producto</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class=" icon-basket"></i></span>
+                            <input type="text" name="name" placeholder="Nombre del producto" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Numero SKU</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-barcode2"></i></span>
+                                <input type="text" name="sku" placeholder="Numero sku del producto" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Categoria</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-puzzle"></i></span>
+                                <select class="form-control" name="id_category" required>
+                                    <option value="">Selecciona una opcion</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id_category }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Proveedor</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-user-check"></i></span>
+                                <select class="form-control" name="id_provider" required>
+                                    <option value="">Selecciona una opcion</option>
+                                    {% for provider in providers %}
+                                        <option value="{{ provider.id_provider }}">{{ provider.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Descripcion de producto</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class=" icon-paragraph-justify2"></i></span>
+                                        <textarea name="description" placeholder="Descripcion corta del producto" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Venda de producto</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class=" icon-puzzle"></i></span>
+                                    <select class="form-control" name="key_unit" required>
+                                       <option value="">Selecciona una opcion</option>
+                                       <option value="Pieza">Pieza</option>
+                                       <option value="Juego">Juego</option>
+                                       <option value="Kit">Kit</option>
+                                       <option value="Kilogramo">Kilometro</option>
+                                        <option value="Litro">Litro</option>
+                                   </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Cantidad inicial</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-sort-numeric-asc "></i></span>
+                                        <input type="text" name="inventary" placeholder="Cantidad inicial" class="form-control" required
+                                               minlength="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Precio por unidad</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                                        <input type="number" step="any" name="price" placeholder="Precio de producto"
+                                               class="form-control" required minlength="1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-group-material">
+                                    <label class="control-label">Promocion (% descuento)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                                        <input type="number" step="any" name="porcent_discount" placeholder="Ingresa un procentage de descuento" class="form-control"  minlength="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                    <div class="col-sm-12">
+                        <label class="control-label">Imagenes</label>
+                        <input type="file" name="images[]" class="file-input" multiple="multiple">
+                        <br><br>
+                    </div>
+
+
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-material">
+                            <label class="control-label">Marca</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class=" icon-star-full2"></i></span>
+                                <select name="id_mark" class="form-control">
+                                {% for mark in marks %}
+                                    <option value="{{ mark.id_mark }}">{{ mark.name }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8 ">
+                        <div class="col-sm-2">
+                        <label class="control-label">Es publico</label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="is_public" value="1" checked="checked" class="switchios">
+
+                            </label>
+                        </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="control-label">Top producto</label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="is_top" value="1"  class="switchios">
+                            </label>
+                        </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                        <div class="text-right">
+                            <button type="reset" class="btn btn-default" id="reset">Limpiar <i
+                                        class="icon-reload-alt position-right"></i></button>
+                            <button type="submit" class="btn btn-success">Añadir <i
+                                        class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                        </form>
+
+                    </div>
+                </div>
+        </div>
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

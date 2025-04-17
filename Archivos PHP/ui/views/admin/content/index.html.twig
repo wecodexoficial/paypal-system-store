@@ -1,0 +1,137 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Main content -->
+    <div class="content-wrapper">
+
+        <!-- Content area -->
+        <div class="content">
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <!-- Marketing campaigns -->
+                    <div class="panel panel-flat">
+                        <div class="panel-heading">
+                            <h6 class="panel-title">Detalles generales</h6>
+                            <div class="heading-elements">
+                                <span class="label bg-success heading-text">{{ sell_stadistic.total_sell }} finalizadas</span>
+                                <ul class="icons-list">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-menu7"></i> <span class="caret"></span></a>
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-lg text-nowrap">
+                                <tbody>
+                                <tr>
+                                    <td class="col-md-5">
+                                        <div class="media-left">
+                                            <div id="campaigns-donut"></div>
+                                        </div>
+
+                                        <div class="media-left">
+                                            <h5 class="text-semibold no-margin">${{ sell_stadistic.total_money|number_format(2, '.', ',' )}} <small class="text-success text-size-base"><i class="icon-arrow-up12"></i> (+100%)</small></h5>
+                                            <ul class="list-inline list-inline-condensed no-margin">
+                                                <li>
+                                                    <span class="status-mark border-success"></span>
+                                                </li>
+                                                <li>
+                                                    <span class="text-muted">Pagos totales</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+
+                                    <td class="col-md-5">
+                                        <div class="media-left">
+                                            <div id="campaign-status-pie"></div>
+                                        </div>
+
+                                        <div class="media-left">
+                                            <h5 class="text-semibold no-margin">${{ sell_stadistic.total_tax|number_format(2, '.', ',' )}}<small class="text-danger text-size-base"><i class="icon-arrow-down12"></i> (16%)</small></h5>
+                                            <ul class="list-inline list-inline-condensed no-margin">
+                                                <li>
+                                                    <span class="status-mark border-danger"></span>
+                                                </li>
+                                                <li>
+                                                    <span class="text-muted">Impuestos pagados</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table text-nowrap">
+                                <thead>
+                                <tr class="bg-slate-800">
+                                    <th width="70%"><span class="text-light">Cliente</span></th>
+                                    <th><span class="text-light">Nº Transaccion</span></th>
+                                    <th><span class="text-light">Nº de venta PLP</span></th>
+                                    <th><span class="text-light">Monto</span></th>
+                                    <th><span class="text-light">Moneda de pago</span></th>
+                                    <th><span class="text-light">Estado pago</span></th>
+                                    <th><span class="text-light">Estado</span></th>
+
+
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for data in sell_last %}
+                                    <tr>
+                                        <td><b>{{ data.client.name}} {{ data.client.lastname}}</b>
+                                        </td>
+                                        <td>{{ data.sell.transaction_id}}</td>
+                                        <td>{{ data.sell.build_number}}</td>
+                                        <td>${{ data.sell.atm|number_format(2, '.', ',' )}}</td>
+                                        <td>{{ data.sell.currency_code_payment}}</td>
+                                        <td>{{ data.sell.payment_status}}</td>
+                                        <td>
+                                            {% if  data.sell.status == 1  %}
+                                                Orden confirmada
+                                            {% elseif  data.sell.status == 2 %}
+                                                = Orden de procesamiento
+                                            {% elseif  data.sell.status == 3 %}
+                                                Control de calidad
+                                            {% elseif  data.sell.status == 4 %}
+                                                Producto enviado
+                                            {% elseif  data.sell.status == 5 %}
+                                                Producto entregado
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /marketing campaigns -->
+
+
+                </div>
+            </div>
+                    <!-- /daily financials -->
+
+                </div>
+            </div>
+            <!-- /dashboard content -->
+
+
+
+
+{% endblock %}

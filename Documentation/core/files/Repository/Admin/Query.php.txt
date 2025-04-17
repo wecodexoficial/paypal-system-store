@@ -1,0 +1,93 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eduardo Mtz
+ * Date: 26/09/2017
+ * Time: 00:04
+ */
+
+namespace Admin;
+class Query extends \MasterController
+{
+
+
+    /**
+     * @param $table2
+     * @param $key
+     * @return array|FALSE|int
+     */
+
+    public function joinQuery($table2, $key)
+    {
+        $q = "SELECT * FROM $this->table INNER JOIN $table2 ON $table2.$key = $this->table.$key";
+        return self::dbQuery($q);
+
+    }
+
+    public function joinQueryWhere($table2, $key, $field, $value)
+    {
+        $q = "SELECT * FROM $this->table INNER JOIN $table2 ON $table2.$key = $this->table.$key WHERE $this->table.$field ='$value'";
+        return self::dbQuery($q);
+    }
+
+
+    public static function qUpdateWhere($table, $set_field, $set_value, $where_field, $where_value)
+    {
+        $q = "UPDATE $table SET $set_field = '$set_value' WHERE $where_field='$where_value'";
+        return self::dbQuery($q);
+    }
+
+    public static function qMultiWhere($table, $arr_conditions, $type_condition, $order_value =false, $order = false)
+    {
+        $condition = null;
+        foreach ($arr_conditions as $field => $value) {
+            $condition .= ($field . " = '" . $value . "'  " . $type_condition . " ");
+        }
+        $condition = substr($condition, 0, -4);
+        if (!empty($order_value) || !empty($order)) {
+            $q = "SELECT * FROM $table WHERE $condition ORDER BY $order_value $order";
+        } else {
+            $q = "SELECT * FROM $table WHERE $condition";
+        }
+        return self::dbQuery($q);
+    }
+
+    public static function qWhere($table, $field, $value)
+    {
+        $q = "SELECT * FROM $table WHERE $field ='$value'";
+        return self::dbQuery($q);
+
+    }
+
+    public static function qUniqueWhere($tables, $field, $value)
+    {
+        $request = array();
+        if (!empty($tables) || !empty($field)) {
+            foreach ($tables as $table) {
+                foreach (self::qWhere($table, $field, $value) as $key) {
+                    $request = array_merge($request, $key);
+                }
+            }
+            return $request;
+        } else {
+            return null;
+        }
+    }
+
+
+    public static function qUniqueMultiWhere($tables, $arr_conditions, $type_condition, $order_value = false, $order = false)
+    {
+        $request = array();
+        if (!empty($tables) || !empty($field)) {
+            foreach ($tables as $table) {
+                foreach (self::qMultiWhere($table,$arr_conditions, $type_condition, $order_value, $order) as $key) {
+                    $request = array_merge($request, $key);
+                }
+            }
+            return $request;
+        } else {
+            return null;
+        }
+    }
+
+}

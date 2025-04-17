@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+        {% include 'admin/structure/head.html.twig' %}
+        <title>Wicommer - Inicio de sesion</title>
+    {% endblock %}
+    {% block estilos %}
+        {% include 'admin/structure/styles.html.twig' %}
+    {% endblock %}
+</head>
+<body>
+
+<!-- Main navbar -->
+<div class="navbar navbar-inverse">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="index.html"><img src="{{ base }}{{ ws_info.ws_logo }}" alt=""></a>
+
+        <ul class="nav navbar-nav pull-right visible-xs-block">
+            <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+        </ul>
+    </div>
+
+    <div class="navbar-collapse collapse" id="navbar-mobile">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{{ base }}">
+                    <i class="icon-display4"></i> <span class="visible-xs-inline-block position-right"> Ir a la tienda</span>
+                </a>
+            </li>
+
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-cog3"></i>
+                    <span class="visible-xs-inline-block position-right"> Options</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- /main navbar -->
+
+
+<!-- Page container -->
+<div class="page-container login-container">
+
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Content area -->
+            <div class="content">
+
+                <!-- Simple login form -->
+                <form class="frmLogin" method="post" id="signIn">
+                    <div class="panel panel-body login-form">
+                        <div class="text-center">
+                            <div class="icon-object border-slate-300 text-slate-300"><i class="icon-reading"></i></div>
+                            <h5 class="content-group">Iniciar sesion <small class="display-block">Ingresa tus datos de acceso</small></h5>
+                        </div>
+
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="text"  name="id" id="id" class="form-control" placeholder="Nombre de usuario" autofocus required>
+                            <div class="form-control-feedback">
+                                <i class="icon-user text-muted"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+                            <div class="form-control-feedback">
+                                <i class="icon-lock2 text-muted"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button  id="ingresar" class="btn btn-success btn-lg btn-block">Iniciar sesion <i class="icon-circle-right2 position-right"></i></button>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="#">Forgot password?</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- /simple login form -->
+
+
+                <!-- Footer -->
+                <div class="footer text-muted">
+                    &copy; 2017. <a href="#">Wicommer</a> by <a href="https://www.wecodex.com" target="_blank">Wecodex Solutions</a>
+                </div>
+                <!-- /footer -->
+
+            </div>
+            <!-- /content area -->
+
+        </div>
+        <!-- /main content -->
+
+    </div>
+    <!-- /page content -->
+
+</div>
+<!-- /page container -->
+
+
+</body>
+<script src="/ui/assets/general/js/peticiones/login.js"></script>
+</html>
+
+

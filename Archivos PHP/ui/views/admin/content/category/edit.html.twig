@@ -1,0 +1,94 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.categories|capitalize }}</span> - {{ translate.edit|capitalize }}  {{ translate.category }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/category" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-list"></i></b> {{ translate.list|capitalize }} {{ translate.of }} {{ translate.categories }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+        <!-- Basic datatable -->
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">{{ translate.new_register }}</h5>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                <form class="formNormal" id="{{ base }}admin/category/update" action="#" method="post">
+
+
+                        <div class="col-md-6">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Nombre de categoria</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-cube"></i></span>
+                                    <input type="text" name="name" value="{{ data.name }}" placeholder="Nombre de categoria" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Nombre corto</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class=" fa fa-strikethrough"></i></span>
+                                    <input type="text" name="short_name"  value="{{ data.short_name }}"  placeholder="Nombre corto de categoria" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="form-group form-group-material">
+                                <label class="control-label">Descripcion de producto</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-align-justify"></i></span>
+                                    <textarea name="description" placeholder="Descripcion corta del producto" rows="5" class="form-control">{{ data.description }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    <input type="hidden" name="id_product" value="{{ data.id_product }}">
+                    <div class="text-right">
+                        <button type="reset" class="btn btn-default" id="reset">Limpiar <i
+                                    class="icon-reload-alt position-right"></i></button>
+                        <button type="submit" class="btn btn-primary">Guardar <i
+                                    class="icon-arrow-right14 position-right"></i></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

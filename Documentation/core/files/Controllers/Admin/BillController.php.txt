@@ -1,0 +1,41 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 10/09/2017
+ * Time: 1:26
+ */
+
+namespace Admin;
+
+
+use Sat\XMLArrayController;
+use Sat\ValidatorController;
+class BillController extends \MasterController
+{
+    public $arr_generate;
+    public $validate;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->arr_generate = new XMLArrayController();
+
+    }
+
+
+    public function uploadXML(){
+        $source = "documents/3.3/B8A9BC32-638D-4743-93CC-F088514C2B26.xml";
+
+        $data = $this->arr_generate->generateArrayXML($source);
+        $this->validate = new ValidatorController($data["data"]);
+        $this->validate->valida_xsd();
+    }
+
+
+
+
+
+
+
+}

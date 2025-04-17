@@ -1,0 +1,61 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} Completado {% endblock %}
+{% block contenido %}
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        <!-- Page Title-->
+        <div class="page-title">
+            <div class="container">
+                <div class="column">
+                    <h1>Iniciar sesion</h1>
+                </div>
+                <div class="column">
+                    <ul class="breadcrumbs">
+                        <li><a href="index-2.html">Inicio</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li><a href="account-orders.html">Cuenta</a>
+                        </li>
+                        <li class="separator">&nbsp;</li>
+                        <li>Iniciar sesion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Page Content-->
+        <div class="container padding-bottom-3x mb-2">
+            <div class="row">
+
+                <div class="col-md-3"></div>
+                <div class="col-md-6 login-box" >
+                    <div class="padding-top-3x hidden-md-up"></div>
+                    <h3 class="margin-bottom-1x">Iniciar sesion</h3>
+                    <p>Inicie sesion para procesar sus pedidos</p>
+                    <form class="frmLogin " method="post" id="signIn">
+                            <div class="row margin-bottom-1x">
+                                <div class="col-xl-4 col-md-6 col-sm-4"><a class="btn btn-sm btn-block facebook-btn" href="#"><i class="socicon-facebook"></i>&nbsp;Facebook login</a></div>
+                                <div class="col-xl-4 col-md-6 col-sm-4"><a class="btn btn-sm btn-block twitter-btn" href="#"><i class="socicon-twitter"></i>&nbsp;Twitter login</a></div>
+                                <div class="col-xl-4 col-md-6 col-sm-4"><a class="btn btn-sm btn-block google-btn" href="#"><i class="socicon-googleplus"></i>&nbsp;Google+ login</a></div>
+                            </div>
+                            <h4 class="margin-bottom-1x">O usando el formulario a continuación</h4>
+                            <div class="form-group input-group">
+                                <input type="text"  name="id" id="id" class="form-control" placeholder="Nombre de usuario" autofocus required>
+                            </div>
+                            <div class="form-group input-group">
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-between padding-bottom-1x">
+                                <label class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" checked><span class="custom-control-indicator"></span><span class="custom-control-description">Remember me</span>
+                                </label><a class="navi-link" href="{{ base }}">Olvido su contraseña?</a>
+                            </div>
+                            <div class="text-center text-sm-right">
+                                <button  id="ingresar" class="btn btn-success btn-lg btn-block">Iniciar sesion <i class="icon-circle-right2 position-right"></i></button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

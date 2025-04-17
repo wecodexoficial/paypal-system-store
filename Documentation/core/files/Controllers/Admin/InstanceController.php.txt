@@ -1,0 +1,42 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eddie
+ * Date: 10/09/2017
+ * Time: 1:26
+ */
+
+namespace Admin;
+
+class InstanceController extends \MasterController
+{
+    public $arr_generate;
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+
+    public static function getInstancesData(){
+        return self::model('core_sap_servers')->all();
+    }
+
+    public static function save(){
+        $data = self::httpPost('data');
+        self::model("core_sap_servers")->add($data);
+        \Responses::message("Se ha agregado correctamente la instancia","CORRECTO","",true,true);
+
+    }
+
+    function update(){
+
+    }
+
+
+    function delete(){
+
+    }
+
+
+}

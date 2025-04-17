@@ -1,0 +1,72 @@
+<?php
+/**
+ * AuthController.php
+ * Created By: Josué Saúl Martínez
+ * Date: 27/04/2017
+ * Time: 01:32
+ */
+namespace Auth;
+
+use Admin\Query;
+
+class AuthController extends \MasterController {
+	public function getData(){
+        $data['id_usuario'] = self::httpPost('id');
+        $data['password'] = self::httpPost('password');
+        return $data;
+    }
+
+
+	public function signIn(){
+
+	    // Verifica el usuario //
+	    $dbdata= null;
+	    if($this->getSessionInstance('intentos')>=5){
+            \Responses::message('Tu sessión está bloqueada intenta más tarde','ERROR');
+        }
+	    if($this->checkUser('id_usuario',$this->getData()['id_usuario'])){
+            $dbdata= self::model('common_user')->getField('id_usuario',$this->getData()['id_usuario']);
+        }else{
+	        \Responses::message('El usuario '.$this->getData()['id_usuario'].' no existe','ERROR');
+        }
+
+        // Veriicacion de contraseña //
+        if(password_verify($this->getData()['password'],$dbdata[0]['password'])){
+            $this->setSessionInstance('auth',self::dbQuery(Repository::getPermisions($dbdata[0]['id_usuario'])));
+            $this->setSessionInstance('session_user_id',$this->getData()['id_usuario']);
+            $this->setSessionInstance('language_selector',\Base::instance()->get('LANGUAGE_SELECTOR'));
+            $this->setSessionInstance('session_data_user', Query::qUniqueWhere(array("common_user","common_user_rol"), "id_usuario", $this->getData()['id_usuario']));
+            \Responses::message('Bienvenido '.$this->getData()['id_usuario'].' <br>Ingresando al administrador','CORRECTO');
+        }else{
+            /***** Attempts Limit *****/
+            if($this->getSessionInstance('intentos')<4){
+                $this->setSessionInstance('intentos',$this->getSessionInstance('intentos')+1);
+
+                \Responses::message('La contraseña es incorrecta intento '.
+                    $this->getSessionInstance('intentos').
+                    ' Serás bloqueado al quinto intento por 1 hora','ERROR');
+            }else {
+                $this->setSessionInstance('intentos', $this->getSessionInstance('intentos') + 1);
+                $this->setSessionTimer('timer', 'baneo');
+                \Responses::message('Has sido Bloqueado' . ($this->
+                    getSessionInstance('intentos')), 'ERROR');
+            }
+            }
+	}
+
+    // Cierra y destruye todas las seciones //
+    public function signOut(){
+        $this->flushSessionAll();
+        \Base::instance()->reroute("/admin");
+    }
+
+    /**
+     * @param $field
+     * @param $username
+     * @return bool
+     */
+	public function checkUser($field,$username){
+		return self::model('common_user')->existValue($field,$username);
+	}
+}
+

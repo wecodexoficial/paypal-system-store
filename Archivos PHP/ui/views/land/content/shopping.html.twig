@@ -1,0 +1,133 @@
+{% extends "land/structure/base.html.twig" %}
+{% block title %} {{ data.product.name }} {% endblock %}
+{% block contenido %}
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+    <!-- Page Title-->
+    <div class="page-title">
+        <div class="container">
+            <div class="column">
+                <h1>Carrito de compra</h1>
+            </div>
+            <div class="column">
+                <ul class="breadcrumbs">
+                    <li><a href="index-2.html">Inicio</a>
+                    </li>
+                    <li class="separator">&nbsp;</li>
+                    <li>Carrito de compra</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Page Content-->
+    <div class="container padding-bottom-3x mb-1">
+        <!-- Alert-->
+
+
+           {% if session_data_user == "" %}
+
+        <div class="alert alert-danger alert-dismissible fade show text-center" style="margin-bottom: 30px;">
+            <span class="alert-close" data-dismiss="alert"></span>
+            Inicia sesion o registrate para completar la compra
+        </div>
+        {% else  %}
+
+
+            <div class="alert alert-success alert-dismissible fade show text-center" style="margin-bottom: 30px;">
+                <span class="alert-close" data-dismiss="alert"></span>
+                Ahora puedes procesar tus compras realizando tus pagos por PayPal de forma segura
+            </div>
+        {% endif %}
+
+        <!-- Shopping Cart-->
+        <div class="table-responsive shopping-cart">
+            <table class="table table-striped">
+                <thead class="thead-inverse">
+                <tr>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-center">Descuento</th>
+                    <th class="text-center">Precio</th>
+                    <th class="text-center">Subtotal</th>
+                    <th class="text-center">
+                        <form class="formNormal" id="{{ base }}shopping/delall" action="#" method="post">
+                            <button class="btn btn-sm btn-outline-danger">Eliminar compras</button>
+                        </form>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set i=0 %}
+                {% set total = 0 %}
+                {% for data in ft_shopping %}
+                    <tr>
+                        <td>
+                            <div class="product-item">
+                                <div class="product-info">
+                                    <h4 class="product-title"><a
+                                                href="{{ base }}product/view/{{ data.product.id_product }}">{{ data.product.name }}</a>
+                                    </h4>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="count-input">
+                                {{ data.quantity }}
+                            </div>
+                        </td>
+                        <td class="text-center text-lg text-medium">${{ data.discount|number_format(2, '.', ',') }}</td>
+                        <td class="text-center text-lg text-medium">${{ data.price|number_format(2, '.', ',') }}</td>
+                        <td class="text-center text-lg text-medium">${{ data.subtotal|number_format(2, '.', ',') }}</td>
+                        <td class="text-center">
+                            <form class="formNormal" id="{{ base }}shopping/del" action="#" method="post">
+                                <input type="hidden" name="id_product" value="{{ i }}">
+                                <button class="remove-from-cart none" style="border:none; background-color: white;"
+                                        data-toggle="tooltip" title="Remove item"><i class="icon-cross"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% set i = i + 1 %}
+                    {% set total = total + data.subtotal %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="shopping-cart-footer">
+            <div class="column">
+                <div class="coupon-form" method="get" action="#" >
+                    <input class="form-control form-control-sm" type="text" placeholder="Codigo cupon" required>
+                    <button class="btn btn-outline-primary btn-sm" type="submit">Aplicar cupon</button>
+                </div>
+            </div>
+            <div class="column text-lg">Subtotal: <span
+                        class="text-medium">${{ total|number_format(2, '.', ',') }}</span></div>
+            <div class="column text-lg">IVA: <span class="text-medium">16%</span></div>
+        </div>
+        <form class="formNormal " id="{{ base }}shopping/payment/setpayment" action="#" method="post">
+
+        <div class="shopping-cart-footer">
+                <div class="column"><a class="btn btn-outline-secondary" href="{{ base }}"><i class="icon-arrow-left"></i>&nbsp;Volvar al inicio</a></div>
+
+
+           {% if session_data_user != "" %}
+                {% if ft_shopping != ""%}
+                <div class="column">
+                  <button type="submit" class="btn btn-success">Finalizar compra</button>
+                </div>
+                {% endif %}
+           {% else %}
+
+               <div class="column">
+                   <a href="{{ base }}register" class="btn btn-success">Registrate</a>
+               </div>
+
+            {% endif %}
+
+            </div>
+            <!-- Related Products Carousel-->
+        </form>
+    </div>
+
+{% endblock %}

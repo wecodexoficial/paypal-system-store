@@ -1,0 +1,241 @@
+{% extends "admin/structure/base.html.twig" %}
+
+{% block contenido %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">{{ translate.sell|capitalize }}</span> - Nº  {{ data.sell.transaction_id }}</h4>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <a href="{{ base }}admin/sells" class="btn btn-success btn-labeled btn-xs"><b><i class="icon-list"></i></b> {{ translate.list|capitalize }} {{ translate.of }} {{ translate.sells }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- Content area -->
+    <div class="content">
+
+    <div class="row">
+    <div class="col-md-4">
+
+        <!-- Search field -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h6 class="panel-title">Informacion de venta</h6>
+            </div>
+            <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="bg-slate-800">
+                        <tr>
+                            <th>Dato</th>
+                            <th>Valor</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Numero de transsaccion</td>
+                                <td>{{ data.sell.transaction_id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Codigo de correlacion</td>
+                                <td>{{ data.sell.correlation_id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Numero de venta</td>
+                                <td>{{ data.sell.build_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>Correo de comprador paypal</td>
+                                <td>{{ data.sell.email_buyer }}</td>
+                            </tr>
+                            <tr>
+                                <td>Moneda de pago</td>
+                                <td>{{ data.sell.currency_code_payment }}</td>
+                            </tr>
+                            <tr>
+                                <td>Moneda de venta</td>
+                                <td>{{ data.sell.currency_code_sell }}</td>
+                            </tr>
+                            <tr>
+                                <td>Estado de cuenta de comprador</td>
+                                <td>{{ data.sell.player_status }}</td>
+                            </tr>
+                            <tr>
+                                <td>Estado de venta</td>
+                                <td>{{ data.sell.payment_status }}</td>
+                            </tr>
+                            <tr>
+                                <td>Fecha de compra</td>
+                                <td>{{ data.sell.date_re }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Monto pagado por productos</td>
+                                <td>${{ data.sell.itemamt|number_format(2, '.', ',') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Monto pagado por impuestos</td>
+                                <td>${{ data.sell.taxatm|number_format(2, '.', ',') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Monto pagado por envio</td>
+                                <td>$10.00</td>
+                            </tr>
+                            <tr>
+                                <td>Monto total pagado</td>
+                                <td>$ {{ data.sell.atm|number_format(2, '.', ',') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+        <!-- /search field -->
+    </div>
+    <div class="col-md-8">
+            <div class="col-md-6">
+                <!-- Search field -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Informacion de cliente</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="bg-slate-800">
+                            <tr>
+                                <th>Dato</th>
+                                <th>Valor</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Numero del cliente</td>
+                                <td>{{ data.client.name }} {{ data.client.lastname }}</td>
+                            </tr>
+                            <tr>
+                                <td>Correo electronico</td>
+                                <td>{{ data.client.email }}</td>
+                            </tr>
+                            <tr>
+                                <td>Telefono</td>
+                                <td>{{ data.client.phone }}</td>
+                            </tr>
+                            <tr>
+                                <td>Direccion</td>
+                                <td>{{ data.client.address }}</td>
+                            </tr>
+                            <tr>
+                                <td>Pais</td>
+                                <td>{{ data.client.country }}</td>
+                            </tr>
+                            <tr>
+                                <td>Ciudad</td>
+                                <td>{{ data.client.city }}</td>
+                            </tr>
+                            <tr>
+                                <td>Codigo postal</td>
+                                <td>{{ data.client.cp }}</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /search field -->
+            </div>
+            <div class="col-md-6">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Estado de envio</h6>
+                    </div>
+                    <div class="panel-body">
+                        <form class="formNormal" id="{{ base }}admin/sell/op/update" action="#" method="post">
+                        <fieldset>
+                            <input type="hidden" value="{{ data.sell.transaction_id }}" name="transaction_id">
+                            <input type="hidden" value="{{ data.sell.id_user }}" name="id_user">
+                            <div class="form-group">
+                                <label>Estado de entrega:</label>
+                                <select name="status" class="form-control">
+                                    <option value="1" {% if data.sell.status == 1 %} selected {% endif %}>Orden confirmada</option>
+                                    <option value="2"  {% if data.sell.status == 2 %} selected {% endif %}>Orden de procesamiento</option>
+                                    <option value="3"  {% if data.sell.status == 3 %} selected {% endif %}>Control de calidad</option>
+                                    <option value="4"  {% if data.sell.status == 4 %} selected {% endif %}>Producto enviado</option>
+                                    <option value="5"  {% if data.sell.status == 5 %} selected {% endif %}>Producto entregado</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Paqueteria:</label>
+                                <input type="text" name="send_by" value="{{ data.sell.send_by }}" class="form-control" placeholder="Ingresa el nombre de la paqueteria de envio">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Numero de envio:</label>
+                                <input type="text" value="{{ data.sell.number_send }}" name="number_send" class="form-control" placeholder="Ingresa el numero de rastreo del envio">
+                            </div>
+                            <div class="form-group">
+                                <label>Notas:</label>
+                                <textarea type="text"  name="notes" class="form-control" rows="2" placeholder="Notas de compra">{{ data.sell.notes }}</textarea>
+                            </div>
+                        </fieldset>
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">Guardar <i class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Productos</h6>
+                    </div>
+
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="bg-slate-800">
+                            <tr>
+                                <th width="60%">Producto</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for data in data.products %}
+                                <tr>
+                                    <td>{{ data.info.name }}</td>
+                                    <td>{{ data.sell.quantity }}</td>
+                                    <td>$ {{  data.sell.subtotal|number_format(2, '.', ',')}}</td>
+
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+     </div>
+
+    </div>
+
+    </div>
+
+
+
+    </div>
+    <!--END ASIDE-->
+
+
+
+
+
+{% endblock %}

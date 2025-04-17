@@ -1,0 +1,99 @@
+<?php
+class Responses{
+
+    /**
+     * @param $mensaje | set message
+     * @param string $tipoMensaje | Type message
+     * @param int $estatus | Default http code
+     *
+     * Full json message whit structure
+     */
+   public static function message($mensaje,$tipoMensaje="CORRECTO",$close = false,$estatus=200,$reload= false, $redir = ""){
+        $data = array();
+        $data['estatus'] = $estatus;
+        $data['mensaje']=$mensaje;
+        $data['reload'] = $reload;
+        $data['redir'] = $redir;
+        $data['tipoRespuesta']='MENSAJE';
+        $data['tipoMensaje']=$tipoMensaje;
+        echo json_encode($data);
+        header('Content-type: application/json');
+        if ($close) {
+            exit();
+        }
+    }
+
+
+    /**
+     * @param $numsuccess | Juniper success
+     * @param $mensaje | Juniper Message
+     * @param $valor | Print a value
+     * @param $tipoMensaje | Get message type
+     *
+     * This class
+     */
+
+
+    /**
+     * Send A fail status Error
+     */
+    public static function fail(){
+     $data['Error']='Error';
+        echo json_encode($data);
+        header('Content-type: application/json');
+        exit();
+    }
+
+    /**
+     * @param $code | Error code
+     * @param $status | HTTP STATUS
+     * @param $text | A custom text message
+     *
+     * This response is exclusive used in @throws ErrorController
+     */
+    public static function ajaxFail($code,$status,$text){
+        $data = array();
+        $data['code'] = $code;
+        $data['status']=$status;
+        $data['text']=$text;
+        echo json_encode($data);
+        header('Content-type: application/json');
+        exit();
+    }
+
+    /**
+     * @param array $data | Send array response
+     *
+     * Single format jason
+     */
+    static function jsonData($data=array()){
+        $response['data'] = $data;
+        echo json_encode($response);
+        header('Content-type: application/json');
+        exit();
+    }
+
+    /**
+     * @param $url | Send url for redirecting
+     * @param null $mensaje | Set message
+     * @param int $estatus | Set Status
+     *
+     * Used to send a redirect Response.
+     */
+    static function redirect($url,$mensaje=null, $estatus=200){
+        $data['redirect']=true;
+        $data = array();
+        $data['estatus'] = $estatus;
+        $data['url']=$url;
+        $data['mensaje'] = $mensaje;
+        $data['tipoRespuesta']='REDIRCCION';
+        header('Content-type: application/json');
+        echo json_encode($data);
+        if($estatus==408){
+            die();
+        }else{
+            exit();
+        }
+    }
+
+}

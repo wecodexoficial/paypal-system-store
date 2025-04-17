@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * Controlador de subida
+ * by Eddie
+ *
+ */
+class UploadFile
+{
+
+    public function upload($data = null, $expensions,$maxsize, $dir)
+    {
+        $request = array();
+
+        $errors = null;
+            $file_name = $data['name'];
+            $file_size = $data['size'];
+            $file_tmp =  $data['tmp_name'];
+
+            $value = explode(".", $file_name);
+            $file_ext = strtolower(array_pop($value));
+
+        if (in_array($file_ext, $expensions) === false) {
+                $errors .= "Extensión no permitida";
+            }
+            if ($file_size >= $maxsize * 1048576) {
+                $errors .= 'El tamaño del archivo debe ser menor a '.$maxsize. ' MB';
+            }
+
+            if (empty($errors) == true) {
+                move_uploaded_file($file_tmp,  $dir ."/". $file_name);
+                $request["status"] = 1;
+                $request["path"] = $dir ."/". $file_name;
+                $request["message"] = "Se ha cargado correctamente el archivo <br>". $file_name;
+                return $request;
+            } else {
+                $request["status"] = 0;
+                $request["message"] = "Se ha producido un error al cargar el archivo <br>".$errors;
+                return $request;
+            }
+        }
+
+        public static function delete($data = null,  $dir){
+            $file_name = $data['name'];
+            unlink($dir ."/". $file_name);
+        }
+}
+

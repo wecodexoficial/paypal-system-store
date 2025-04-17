@@ -1,0 +1,81 @@
+<?php
+/**
+ *
+ * CONTROLADOR DE RENDERIZACIONES
+ * Desde este controlador se llevara acabo
+ * las renderizaciones de cada una de las v
+ * istas generadas
+ *
+ * Fecha: 24/08/2017
+ * Hora: 04:39 PM
+ *
+ */
+
+namespace Admin;
+
+
+class RenderController extends \MasterController
+{
+
+    public $notification;
+
+    function __construct($notification)
+    {
+        parent::__construct();
+        UserController::getNotifications();
+        \Locales::getLocale();
+    }
+
+    public function login()
+    {
+        self::render('admin/content/login.html.twig');
+    }
+
+    public function index()
+    {
+        self::render('admin/content/index.html.twig');
+
+    }
+
+    public function instances()
+    {
+        self::$viewparams["table"] = InstanceController::getInstancesData();
+        self::render('admin/content/config/instances.html.twig');
+    }
+
+    public function syncronice()
+    {
+        self::render('admin/content/config/syncronice.html.twig');
+    }
+
+
+    public function consignation()
+    {
+        self::render('admin/content/invoices/consignation.html.twig');
+    }
+
+    public function miro()
+    {
+        self::render('admin/content/invoices/miro.html.twig');
+    }
+
+    public function users()
+    {
+
+        $data = UserController::getUsersData();
+        $autorizers = UserController::getAutorizersData();
+        self::$viewparams['autorizers'] = $autorizers;
+        self::$viewparams['table'] = $data['data'];
+        self::$viewparams['rols'] = $data['rols'];
+        self::render('admin/content/config/users/users.html.twig');
+    }
+
+
+    public function invoices()
+    {
+        self::render('admin/content/invoices/invoices.html.twig');
+    }
+
+
+
+}
